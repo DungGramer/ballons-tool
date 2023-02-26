@@ -1,6 +1,7 @@
 import React from "react";
 import { useGlobalContext } from "../../App";
 import { UploadImg } from "../../services/api";
+import './header.scss';
 
 const Header = () => {
   const { dispatch } = useGlobalContext();
@@ -25,9 +26,9 @@ const Header = () => {
   };
 
   return (
-    <div>
+    <header className="header">
       <button onClick={importImage}>Import Image</button>
-    </div>
+    </header>
   );
 };
 

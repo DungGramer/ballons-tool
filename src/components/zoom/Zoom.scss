@@ -1,0 +1,21 @@
+.zoom {
+  color: #595959;
+  cursor: pointer;
+  float: left;
+  height: 40px;
+  min-height: 1px;
+  position: fixed;
+  width: 100%;
+  bottom: 32px;
+  right: 32px;
+  display: inline-block;
+  width: auto;
+  z-index: 9999;
+  border: 1px solid #c8cdd4;
+  border-radius: 8px;
+  background-color: #fff;
+
+  button:hover {
+    background-color: #c8cdd4;
+  }
+}

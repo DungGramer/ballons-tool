@@ -4,6 +4,8 @@ import "./App.css";
 import Header from "./components/header/Header";
 import Main from "./components/main/Main";
 import Sidebar from "./components/sidebar/Sidebar";
+import Zoom from "./components/zoom/Zoom";
+import CanvasControl from "./utils/canvas";
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
         <section className='flex gap-2 flex-auto'>
           <Sidebar />
           <Main />
+          <Zoom />
         </section>
       </GlobalProvider>
     </div>
@@ -43,9 +46,10 @@ const initialState = {
 
 const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useImmerReducer(reducer, initialState);
+  const canvasControl = new CanvasControl();
 
   return (
-    <GlobalContext.Provider value={{ state, dispatch }}>
+    <GlobalContext.Provider value={{ state, dispatch, canvasControl }}>
       {children}
     </GlobalContext.Provider>
   );
