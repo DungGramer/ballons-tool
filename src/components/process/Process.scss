@@ -1,0 +1,23 @@
+$progressBarColor: #05BE70;
+
+progress#progressBar {
+  width: 100%;
+  height: 4px;
+  position: absolute;
+  bottom: 0;
+
+  background-color: $progressBarColor;
+}
+
+
+progress::-moz-progress-bar {
+    background-color: $progressBarColor !important;
+}
+progress::-webkit-progress-value {
+    background-color: $progressBarColor !important;
+    border-radius: 8px;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #cccccc !important;
+}

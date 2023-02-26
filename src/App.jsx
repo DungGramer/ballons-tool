@@ -35,6 +35,9 @@ const reducer = (draft, action) => {
     case 'focusImage':
       draft.focusImage = action.value;
       return;
+    case 'setProcess':
+      draft.process = action.value?.data?.process;
+      return;
     default:
       return draft;
   }
@@ -42,6 +45,8 @@ const reducer = (draft, action) => {
 
 const initialState = {
   someState: "someValue",
+  process: -1,
+  projectName: ''
 };
 
 const GlobalProvider = ({ children }) => {
