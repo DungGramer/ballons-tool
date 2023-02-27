@@ -12,7 +12,7 @@ const Sidebar = () => {
       value: index,
     });
 
-    canvasControl.setBackground(image.src);
+    canvasControl.setBackground(state.images[index][state.imageMode]);
   };
 
   return (
