@@ -19,6 +19,13 @@
   }
 }
 
+.sidebar-item {
+  img {
+    padding-block: 1.5rem;
+    border-bottom: 1px solid #c8cdd4;
+  }
+}
+
 #canvas {
   position: absolute;
   top: 0;

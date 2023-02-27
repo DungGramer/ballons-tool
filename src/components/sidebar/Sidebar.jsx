@@ -19,7 +19,7 @@ const Sidebar = () => {
     <div className="max-w-xs w-1/3 sidebar h-screen">
       {state?.images?.map((image, index) => {
         return (
-          <div key={index} className="flex flex-col gap-2 m-6">
+          <div key={index} className="flex flex-col gap-2 sidebar-item">
             <img
               src={image.origin}
               alt={image.name}
