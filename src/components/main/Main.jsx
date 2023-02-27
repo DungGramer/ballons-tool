@@ -8,9 +8,11 @@ const Main = () => {
   const [canvasRef, wrapperRef] = [useRef(null), useRef(null)];
 
   useEffect(() => {
+    if (!canvasRef.current || !wrapperRef.current) return;
+    
     canvasControl.init(canvasRef.current, wrapperRef.current);
     canvasControl.setBackground(state.focusImage?.src);
-  }, [state.focusImage]);
+  }, [state.focusImage, canvasRef, wrapperRef]);
 
   return (
     <div

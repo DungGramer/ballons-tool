@@ -12,3 +12,12 @@
   z-index: 1020;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  background-color: #e0e0e0;
+  opacity: 0.5;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+}

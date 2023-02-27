@@ -19,3 +19,12 @@
     background-color: #c8cdd4;
   }
 }
+
+button.diff {
+  padding-inline: 24px;
+  
+  &.inpainted {
+    background-color: #c8cdd4;
+    // background-color: #7d7f82;
+  }
+}

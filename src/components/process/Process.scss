@@ -1,4 +1,5 @@
-$progressBarColor: #05BE70;
+$progressBarColor: #05be70;
+$transitionTime: 1s;
 
 progress#progressBar {
   width: 100%;
@@ -7,17 +8,20 @@ progress#progressBar {
   bottom: 0;
 
   background-color: $progressBarColor;
+  transition: all $transitionTime ease-out;
 }
-
 
 progress::-moz-progress-bar {
-    background-color: $progressBarColor !important;
+  background-color: $progressBarColor !important;
+  transition: all $transitionTime ease-out;
 }
 progress::-webkit-progress-value {
-    background-color: $progressBarColor !important;
-    border-radius: 8px;
+  background-color: $progressBarColor !important;
+  border-radius: 8px;
+  transition: all $transitionTime ease-out;
 }
 
 progress::-webkit-progress-bar {
-    background-color: #cccccc !important;
+  background-color: #cccccc !important;
+  transition: all $transitionTime ease-out;
 }

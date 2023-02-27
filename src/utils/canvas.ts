@@ -9,7 +9,6 @@ class CanvasControl {
   constructor() {}
 
   init(canvasRef: HTMLCanvasElement, wrapperRef: HTMLDivElement) {
-    if (!canvasRef || !wrapperRef) return;
     this.canvasElement = canvasRef;
     this.wrapperElement = wrapperRef;
 
@@ -20,40 +19,19 @@ class CanvasControl {
     });
   }
 
-  setBackground(url) {
-    this.image = url;
+  setBackground(url:string) {
     fabric.Image.fromURL(url, (img) => {
-      this.setBackGroundImage(img);
-      this.zoom("fit");
-    });
+      this.image = url;
+      this.canvas.setBackgroundImage(img, this.canvas.renderAll.bind(this.canvas));
+      this.zoom.bind(this)("fit");
+    }
+    );
   }
 
-  // getWidthHeightImage(image) {
-  //   const img = new Image();
-  //   img.src = image;
-  //   return {
-  //     width: img.width,
-  //     height: img.height,
-  //     aspectRatio: img.width / img.height,
-  //   };
-  // }
-
-  // getWrapperArea() {
-  //   const area = this.wrapperElement.getBoundingClientRect();
-  //   return {
-  //     safeAreaX: area.x,
-  //     safeAreaY: area.y,
-  //     safeAreaWidth: area.width,
-  //     safeAreaHeight: area.height,
-  //   };
-  // }
-
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
-    console.log(`📕 type - 52:canvas.ts \n`, type);
-    if (!this.canvas) return;
 
-    const img = new Image();
-    img.src = this.image;
+    const img = this.canvas.backgroundImage.getElement();
+
     const { width, height } = img;
     const [widthCanvas, heightCanvas] = [
       this.canvas.getWidth(),
@@ -124,18 +102,8 @@ class CanvasControl {
         return;
     }
   }
-
-  setBackGroundImage(img) {
-    // const image = new Image();
-    // img.src = this.image;
-    const { width, height } = img;
-    if (!this.canvas) return;
-
-    this.canvas.setBackgroundImage(
-      img,
-      this.canvas.renderAll.bind(this.canvas)
-    );
-  }
 }
 
 export default CanvasControl;
+
+export const canvasControl = new CanvasControl();
