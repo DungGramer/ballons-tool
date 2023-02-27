@@ -30,7 +30,6 @@ const Process = () => {
         preloadImage(inpainted, "setImagesInpainted", i);
         preloadImage(mask, "setImagesMask", i);
       }
-      
     }
   }, [state.projectName, state.isProcess]);
 
@@ -41,15 +40,29 @@ const Process = () => {
   ) => {
     DownloadImageFiles(url).then((res: Blob) => {
       const url = URL.createObjectURL(res);
-      const data = type === 'setImagesInpainted' ? url : invertImage(url);
 
-      dispatch({
-        type,
-        value: {
-          index,
-          data
-        },
-      });
+      switch (type) {
+        case "setImagesInpainted":
+          dispatch({
+            type,
+            value: {
+              index,
+              data: url,
+            },
+          });
+          break;
+        case "setImagesMask":
+          invertImage(url).then((data) => {
+            dispatch({
+              type,
+              value: {
+                index,
+                data,
+              },
+            });
+          });
+          break;
+      }
     });
   };
 

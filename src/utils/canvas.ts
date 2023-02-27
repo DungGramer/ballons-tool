@@ -102,6 +102,19 @@ class CanvasControl {
         return;
     }
   }
+
+  addImage(url: string) {
+    fabric.Image.fromURL(url, (img) => {
+      // remove old image
+      Array.from(this.canvas.getObjects()).forEach((obj) => {
+        if (obj.type === "image") {
+          this.canvas.remove(obj);
+        }
+      });
+
+      this.canvas.add(img);
+    });
+  }
 }
 
 export default CanvasControl;

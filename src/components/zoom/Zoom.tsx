@@ -23,7 +23,8 @@ const Zoom = () => {
   const changeDiff = (val) => {
     // const newToggle = state.imageMode === "origin" ? "inpainted" : "origin";
     dispatch({ type: "changeFocusImage", value: val });
-    canvasControl.setBackground(state.images[state.focusImage][val]);
+    // canvasControl.setBackground(state.images[state.focusImage][val]);
+    canvasControl.addImage(state.images[state.focusImage][val]);
   };
 
   return (
