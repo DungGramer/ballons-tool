@@ -19,17 +19,18 @@ class CanvasControl {
     });
   }
 
-  setBackground(url:string) {
+  setBackground(url: string) {
     fabric.Image.fromURL(url, (img) => {
       this.image = url;
-      this.canvas.setBackgroundImage(img, this.canvas.renderAll.bind(this.canvas));
+      this.canvas.setBackgroundImage(
+        img,
+        this.canvas.renderAll.bind(this.canvas)
+      );
       this.zoom.bind(this)("fit");
-    }
-    );
+    });
   }
 
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
-
     const img = this.canvas.backgroundImage.getElement();
 
     const { width, height } = img;
@@ -81,21 +82,15 @@ class CanvasControl {
 
         if (width > height) {
           // Landscape
-          this.canvas.setZoom(heightCanvas / height);
+          this.canvas.setZoom(widthCanvas / width);
         } else {
           // Portrait
           this.canvas.setZoom(heightCanvas / height);
         }
 
-        // if (height > heightCanvas) {
-        //   this.canvas.setZoom(heightCanvas / height);
-        // } else {
-        //   this.canvas.setZoom(heightCanvas / height);
-        // }
-
         // Set center image
         this.canvas.absolutePan({
-          y: 0,
+          y: (height / 2) * this.canvas.getZoom() - heightCanvas / 2,
           x: (width / 2) * this.canvas.getZoom() - widthCanvas / 2,
         });
 
