@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useGlobalContext } from "../../App";
+import { Step, useGlobalContext } from "../../App";
 import { DownloadImageFiles, GetImgTransResult } from "../../services/api";
 import invertImage from "../../utils/invertImage";
 import "./Process.scss";
 
-const Process = () => {
+const Process = ({ startTranslate }) => {
   const { state, dispatch } = useGlobalContext();
   const [process, setProcess] = useState(-1);
   let interval: any = null;
@@ -18,20 +18,19 @@ const Process = () => {
       clearInterval(interval);
       setProcess(-1);
 
-      dispatch({
-        type: "setResult",
-        value: result.data.result,
-      });
+      const data = result.data.result;
 
-      for (let i = 0; i < result.data.result.inpainted.length; i++) {
-        const inpainted = result.data.result.inpainted[i];
-        const mask = result.data.result.mask[i];
+      dispatch({ type: "setResult", value: data }); //? 5: translated
+
+      for (let i = 0; i < data.inpainted.length; i++) {
+        const inpainted = data.inpainted[i];
+        const mask = data.mask[i];
 
         preloadImage(inpainted, "setImagesInpainted", i);
         preloadImage(mask, "setImagesMask", i);
       }
     }
-  }, [state.projectName, state.isProcess]);
+  }, [state.projectName, startTranslate]);
 
   const preloadImage = (
     url: string,
@@ -67,8 +66,9 @@ const Process = () => {
   };
 
   useEffect(() => {
-    if (!state.isProcess) return;
+    if (!startTranslate) return;
 
+    dispatch({ type: "changeStep", value: Step.translating }); //? 4: translating
     interval = setInterval(() => {
       updateProcess();
     }, 1000);
@@ -76,7 +76,7 @@ const Process = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [state.isProcess]);
+  }, [startTranslate]);
 
   if (process < 0 || process === 100) return null;
 
