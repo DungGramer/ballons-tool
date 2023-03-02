@@ -25,7 +25,6 @@ const Zoom = () => {
     canvasControl.addImage(state.images[state.focusImage][val]);
   };
 
-  console.log(`📕 state.step >= Step.upload - 29:Zoom.tsx \n`, state.step, Step.upload, state.focusImage);
   return state.step >= Step.upload && typeof state.focusImage === 'number' ? (
     <div className="flex zoom">
       {state.step >= Step.translated && (

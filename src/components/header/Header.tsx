@@ -1,8 +1,11 @@
+import JSZip from "jszip";
 import React, { useRef, useState } from "react";
 import { Step, useGlobalContext } from "../../App";
 import { ImgTrans, UploadImg } from "../../services/api";
 import Process from "../process/Process";
 import "./header.scss";
+import saveAs from "file-saver";
+import { blobToBase64 } from "../../utils/converter";
 
 const Header = () => {
   const { state, dispatch } = useGlobalContext();
@@ -11,7 +14,7 @@ const Header = () => {
   const [startTranslate, setStartTranslate] = useState(false);
 
   const importImage = (e) => {
-    dispatch({ type: 'changeStep', value: Step.upload }); //? 1: upload
+    dispatch({ type: "changeStep", value: Step.upload }); //? 1: upload
     const images = [...e.target.files];
 
     dispatch({ type: "setImages", value: images });
@@ -19,11 +22,10 @@ const Header = () => {
     UploadImg(images).then((res) => {
       dispatch({ type: "setProjectName", value: res }); //? 2: ready to translate
     });
-
   };
 
   const translate = () => {
-    dispatch({ type: 'changeStep', value: Step.translate }); //? 3: start translate
+    dispatch({ type: "changeStep", value: Step.translate }); //? 3: start translate
     ImgTrans(state.projectName).then((res) => {
       switch (res.code) {
         case 200:
@@ -41,7 +43,22 @@ const Header = () => {
       }
     });
   };
-  console.log(state.step, Step.ready)
+
+  const download = async () => {
+    dispatch({ type: "changeStep", value: Step.download }); //? 6: download
+
+    const zip = new JSZip();
+    const imagesList = state.images.map((image) => image[state.imageMode]) as string[];
+
+    imagesList.forEach((image, index) => {
+      zip.file(`images/${index}.png`, blobToBase64(image));
+    });
+
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, "images.zip");
+      dispatch({ type: "changeStep", value: Step.downloaded }); //? 7: downloaded
+    });
+  };
 
   return (
     <header className="header flex items-center justify-between">
@@ -66,13 +83,22 @@ const Header = () => {
         onChange={importImage}
         hidden
       />
-      <button
-        onClick={translate}
-        className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
-        disabled={state.step < Step.ready}
-      >
-        Translate
-      </button>
+      <section className="flex gap-2">
+        <button
+          onClick={download}
+          className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
+          disabled={state.step < Step.translated}
+        >
+          Download
+        </button>
+        <button
+          onClick={translate}
+          className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
+          disabled={state.step < Step.ready}
+        >
+          Translate
+        </button>
+      </section>
       <Process startTranslate={startTranslate} />
     </header>
   );
