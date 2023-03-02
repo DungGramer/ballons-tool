@@ -3,6 +3,7 @@ import { useImmerReducer } from "use-immer";
 import "./App.css";
 import Header from "./components/header/Header";
 import Main from "./components/main/Main";
+import RightSidebar from "./components/right-sidebar/RightSidebar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Zoom from "./components/zoom/Zoom";
 import { canvasControl } from "./utils/canvas";
@@ -15,6 +16,7 @@ function App() {
         <section className="flex gap-2 flex-auto">
           <Sidebar />
           <Main />
+          <RightSidebar />
           <Zoom />
         </section>
       </GlobalProvider>

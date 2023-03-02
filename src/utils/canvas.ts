@@ -5,38 +5,68 @@ class CanvasControl {
   wrapperElement: HTMLDivElement;
   canvas: fabric.Canvas;
   image: string;
+  toggleText: boolean = false;
+  undoStack: any[] = [];
+  redoStack: any[] = [];
+  pauseSaving: boolean = false;
 
   constructor() {}
 
   init(canvasRef: HTMLCanvasElement, wrapperRef: HTMLDivElement) {
-    this.canvasElement = canvasRef;
-    this.wrapperElement = wrapperRef;
+    that.canvasElement = canvasRef;
+    that.wrapperElement = wrapperRef;
 
-    this.canvas = new fabric.Canvas(this.canvasElement, {
+    if (that.canvas) return;
+
+    that.canvas = new fabric.Canvas(that.canvasElement, {
       selection: false,
-      width: this.wrapperElement.clientWidth,
-      height: this.wrapperElement.clientHeight,
+      width: that.wrapperElement.clientWidth,
+      height: that.wrapperElement.clientHeight,
+    });
+
+    that.canvas.on("object:added", (e) => {
+      if (!that.pauseSaving) {
+        console.log(`📕 added \n`, that.undoStack, that.redoStack);
+        that.undoStack.push(JSON.stringify(that.canvas));
+        that.redoStack = [];
+      }
+    });
+
+    that.canvas.on("object:modified", (e) => {
+      if (!that.pauseSaving) {
+        console.log(`📕 modified \n`, that.undoStack, that.redoStack);
+        that.undoStack.push(JSON.stringify(that.canvas));
+        that.redoStack = [];
+      }
+    });
+
+    that.canvas.on("object:removed", (e) => {
+      if (!that.pauseSaving) {
+        console.log(`📕 removed \n`, that.undoStack, that.redoStack);
+        that.undoStack.push(JSON.stringify(that.canvas));
+        that.redoStack = [];
+      }
     });
   }
 
   setBackground(url: string) {
     fabric.Image.fromURL(url, (img) => {
-      this.image = url;
-      this.canvas.setBackgroundImage(
+      that.image = url;
+      that.canvas.setBackgroundImage(
         img,
-        this.canvas.renderAll.bind(this.canvas)
+        that.canvas.renderAll.bind(that.canvas)
       );
-      this.zoom.bind(this)("fit");
+      that.zoom.bind(that)("fit");
     });
   }
 
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
-    const img = this.canvas.backgroundImage.getElement();
+    const img = that.canvas.backgroundImage.getElement();
 
     const { width, height } = img;
     const [widthCanvas, heightCanvas] = [
-      this.canvas.getWidth(),
-      this.canvas.getHeight(),
+      that.canvas.getWidth(),
+      that.canvas.getHeight(),
     ];
 
     switch (type) {
@@ -45,31 +75,31 @@ class CanvasControl {
 
         if (width > height) {
           // Landscape
-          this.canvas.setZoom(widthCanvas / width);
+          that.canvas.setZoom(widthCanvas / width);
         } else {
           // Portrait
-          this.canvas.setZoom(widthCanvas / width);
+          that.canvas.setZoom(widthCanvas / width);
         }
-        this.canvas.setHeight(height * this.canvas.getZoom());
+        that.canvas.setHeight(height * that.canvas.getZoom());
 
-        this.canvas.absolutePan({
+        that.canvas.absolutePan({
           y: 0,
           x: 0,
         });
 
         return;
       case "zoomIn":
-        const zoomRatio = this.canvas.getZoom() + 0.05;
-        const center = this.canvas.getCenter();
-        this.canvas.zoomToPoint(
+        const zoomRatio = that.canvas.getZoom() + 0.05;
+        const center = that.canvas.getCenter();
+        that.canvas.zoomToPoint(
           new fabric.Point(center.left, center.top),
           zoomRatio
         );
         return;
       case "zoomOut":
-        const zoomRatioOut = this.canvas.getZoom() - 0.05;
-        const centerOut = this.canvas.getCenter();
-        this.canvas.zoomToPoint(
+        const zoomRatioOut = that.canvas.getZoom() - 0.05;
+        const centerOut = that.canvas.getCenter();
+        that.canvas.zoomToPoint(
           new fabric.Point(centerOut.left, centerOut.top),
           zoomRatioOut
         );
@@ -78,20 +108,20 @@ class CanvasControl {
       case "fit":
       default:
         // Fit height image with height canvas
-        this.canvas.setHeight(this.wrapperElement.clientHeight);
+        that.canvas.setHeight(that.wrapperElement.clientHeight);
 
         if (width > height) {
           // Landscape
-          this.canvas.setZoom(widthCanvas / width);
+          that.canvas.setZoom(widthCanvas / width);
         } else {
           // Portrait
-          this.canvas.setZoom(heightCanvas / height);
+          that.canvas.setZoom(heightCanvas / height);
         }
 
         // Set center image
-        this.canvas.absolutePan({
-          y: (height / 2) * this.canvas.getZoom() - heightCanvas / 2,
-          x: (width / 2) * this.canvas.getZoom() - widthCanvas / 2,
+        that.canvas.absolutePan({
+          y: (height / 2) * that.canvas.getZoom() - heightCanvas / 2,
+          x: (width / 2) * that.canvas.getZoom() - widthCanvas / 2,
         });
 
         return;
@@ -101,17 +131,69 @@ class CanvasControl {
   addImage(url: string) {
     fabric.Image.fromURL(url, (img) => {
       // remove old image
-      Array.from(this.canvas.getObjects()).forEach((obj) => {
+      Array.from(that.canvas.getObjects()).forEach((obj) => {
         if (obj.type === "image") {
-          this.canvas.remove(obj);
+          that.canvas.remove(obj);
         }
       });
 
-      this.canvas.add(img);
+      that.canvas.add(img);
     });
+  }
+
+  addText() {
+    const center = that.canvas.getCenter();
+    that.canvas.add(
+      new fabric.IText("Tap and Type", {
+        left: center.left,
+        top: center.top,
+        fontFamily: "arial black",
+        fill: "#333",
+        fontSize: 20,
+      })
+    );
+  }
+
+  undo() {
+    that.pauseSaving = true;
+    that.redoStack.push(that.undoStack.pop());
+    console.log(that.undoStack);
+    let prev = that.undoStack[that.undoStack.length - 1];
+    prev ||= `{}`;
+
+    that.canvas.loadFromJSON(prev, () => {
+      that.canvas.renderAll();
+      that.pauseSaving = false;
+    });
+  }
+
+  redo() {
+    that.pauseSaving = true;
+    let state = that.redoStack.pop();
+    if (state) {
+      that.undoStack.push(state);
+      that.canvas.loadFromJSON(state, () => {
+        that.canvas.renderAll();
+        that.pauseSaving = false;
+      });
+    }
+  }
+
+  shortcut(e: KeyboardEvent) {
+    if (e.key === "z" && e.ctrlKey) {
+      that.undo();
+    } else if (e.key === "y" && e.ctrlKey) {
+      that.redo();
+    } else if (e.key === "t" && e.ctrlKey) {
+      that.addText();
+    } else if (e.key === "Delete" || e.key === "Backspace") {
+      that.canvas.remove(that.canvas.getActiveObject() as any);
+    }
   }
 }
 
 export default CanvasControl;
 
-export const canvasControl = new CanvasControl();
+const that = new CanvasControl();
+
+export { that as canvasControl };

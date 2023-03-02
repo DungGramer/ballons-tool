@@ -12,7 +12,14 @@ const Main = () => {
     
     canvasControl.init(canvasRef.current, wrapperRef.current);
     canvasControl.setBackground(state.focusImage?.src);
-  }, [state.focusImage, canvasRef, wrapperRef]);
+
+    // Add shortcut key
+    document.addEventListener("keydown", canvasControl.shortcut);
+
+    return () => {
+      document.removeEventListener("keydown", canvasControl.shortcut);
+    }
+  }, [state.focusImage]);
 
   return (
     <div
