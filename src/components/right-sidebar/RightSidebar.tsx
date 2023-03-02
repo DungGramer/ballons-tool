@@ -1,22 +1,16 @@
 import React from "react";
-import { useGlobalContext } from "../../App";
+import { Tool, useGlobalContext } from "../../App";
+import BrushOptions from "./BrushOptions";
 import "./RightSidebar.scss";
+import TextOptions from "./TextOptions";
 
 const RightSidebar = () => {
-  const { canvasControl } = useGlobalContext();
-
-  const addText = () => {
-    canvasControl.addText("xcvxcv");
-  };
+  const { state } = useGlobalContext();
 
   return (
     <div className="max-w-xs w-1/3 sidebar h-screen">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={addText}
-      >
-        Add Text
-      </button>
+      {state.toolMode === Tool.brush && <BrushOptions />}
+      {state.toolMode === Tool.text && <TextOptions />}
     </div>
   );
 };

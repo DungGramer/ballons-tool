@@ -21,7 +21,7 @@ const Zoom = () => {
   const { canvasControl, dispatch, state } = useGlobalContext();
 
   const changeDiff = (val) => {
-    dispatch({ type: "changeFocusImage", value: val });
+    dispatch({ type: "changeImageMode", value: val });
     canvasControl.addImage(state.images[state.focusImage][val]);
   };
 

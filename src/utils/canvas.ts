@@ -147,11 +147,20 @@ class CanvasControl {
       new fabric.IText("Tap and Type", {
         left: center.left,
         top: center.top,
-        fontFamily: "arial black",
-        fill: "#333",
-        fontSize: 20,
+        fontFamily: "Helvetica",
+        fill: "#000",
+        fontSize: 40,
+        textAlign: "center",
       })
     );
+  }
+
+  editText(config: { fill?: string }) {
+    const active = that.canvas.getActiveObject();
+    if (active && active.type === "i-text") {
+      active.set(config);
+      that.canvas.renderAll();
+    }
   }
 
   undo() {

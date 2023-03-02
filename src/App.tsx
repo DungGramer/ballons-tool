@@ -5,6 +5,7 @@ import Header from "./components/header/Header";
 import Main from "./components/main/Main";
 import RightSidebar from "./components/right-sidebar/RightSidebar";
 import Sidebar from "./components/sidebar/Sidebar";
+import Toolbar from "./components/toolbar/Toolbar";
 import Zoom from "./components/zoom/Zoom";
 import { canvasControl } from "./utils/canvas";
 
@@ -13,7 +14,8 @@ function App() {
     <div className="App h-screen flex flex-col">
       <GlobalProvider>
         <Header />
-        <section className="flex gap-2 flex-auto">
+        <section className="flex gap-2">
+          <Toolbar />
           <Sidebar />
           <Main />
           <RightSidebar />
@@ -24,7 +26,6 @@ function App() {
   );
 }
 
-
 interface Action {
   type:
     | "setImagesInpainted"
@@ -34,7 +35,8 @@ interface Action {
     | "setResult"
     | "changeStep"
     | "setImages"
-    | "changeFocusImage";
+    | "setTool"
+    | "changeImageMode";
   value: any;
 }
 export enum Step {
@@ -47,6 +49,13 @@ export enum Step {
   download,
   downloaded,
 }
+
+export enum Tool {
+  brush = "brush",
+  eraser = "eraser",
+  text = "text",
+}
+
 interface Draft {
   images: { origin?: string; inpainted?: string; mask?: string }[];
   projectName: string;
@@ -57,9 +66,8 @@ interface Draft {
   mask: string[];
   trans: string;
   step: Step;
+  toolMode: Tool;
 }
-
-
 
 // Step flow: select -> upload -> ready -> translate -> translating -> translated -> download -> downloaded
 
@@ -91,11 +99,14 @@ const reducer = (draft: Draft, action: Action) => {
       draft.trans = action.value?.trans;
       draft.step = Step.translated;
       return;
-    case "changeFocusImage":
+    case "changeImageMode":
       draft.imageMode = action.value;
       return;
     case "changeStep":
       draft.step = action.value;
+      return;
+    case "setTool":
+      draft.toolMode = action.value;
       return;
     default:
       return draft;
@@ -132,7 +143,7 @@ export const useGlobalContext = () => {
     state: Draft;
     dispatch: React.Dispatch<Action>;
     canvasControl: typeof canvasControl;
-  }
+  };
 };
 
 export default App;
