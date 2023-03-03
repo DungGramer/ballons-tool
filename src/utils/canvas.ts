@@ -136,8 +136,12 @@ class CanvasControl {
           that.canvas.remove(obj);
         }
       });
+      const fabricImage = new fabric.Image(img.getElement(), {
+        selectable: false,
+        evented: false,
+      });
 
-      that.canvas.add(img);
+      that.canvas.add(fabricImage);
     });
   }
 
