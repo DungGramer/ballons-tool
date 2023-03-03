@@ -69,7 +69,7 @@ interface Draft {
   toolMode: Tool;
 }
 
-// Step flow: select -> upload -> ready -> translate -> translating -> translated -> download -> downloaded
+// Step flow: 0.select -> 1.upload -> 2.ready -> 3.translate -> 4.translating -> 5.translated -> 6.download -> 7.downloaded
 
 const reducer = (draft: Draft, action: Action) => {
   switch (action.type) {

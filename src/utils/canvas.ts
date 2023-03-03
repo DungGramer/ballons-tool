@@ -50,6 +50,7 @@ class CanvasControl {
   }
 
   setBackground(url: string) {
+    that.removeOldImage();
     fabric.Image.fromURL(url, (img) => {
       that.image = url;
       that.canvas.setBackgroundImage(
@@ -130,18 +131,20 @@ class CanvasControl {
 
   addImage(url: string) {
     fabric.Image.fromURL(url, (img) => {
-      // remove old image
-      Array.from(that.canvas.getObjects()).forEach((obj) => {
-        if (obj.type === "image") {
-          that.canvas.remove(obj);
-        }
-      });
       const fabricImage = new fabric.Image(img.getElement(), {
         selectable: false,
         evented: false,
       });
 
       that.canvas.add(fabricImage);
+    });
+  }
+
+  removeOldImage() {
+    Array.from(that.canvas.getObjects()).forEach((obj) => {
+      if (obj.type === "image") {
+        that.canvas.remove(obj);
+      }
     });
   }
 

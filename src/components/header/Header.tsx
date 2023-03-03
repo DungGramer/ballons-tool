@@ -79,7 +79,7 @@ const Header = () => {
         ref={inputRef}
         type="file"
         multiple
-        accept="image/*"
+        accept="image/png, image/jpeg, image/jpg"
         onChange={importImage}
         hidden
       />
@@ -96,7 +96,7 @@ const Header = () => {
           className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
           disabled={state.step < Step.ready}
         >
-          Translate
+          Clear Text
         </button>
       </section>
       <Process startTranslate={startTranslate} />

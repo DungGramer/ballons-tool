@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "yarn build && ngrok --scheme http http 4173"
   },
   "dependencies": {
     "clsx": "^1.2.1",

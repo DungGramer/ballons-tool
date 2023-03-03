@@ -1,18 +1,26 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useGlobalContext } from "../../App";
 import "./Sidebar.scss";
 
 const Sidebar = () => {
   const { state, dispatch, canvasControl } = useGlobalContext();
+  const currentFocus = useRef(null);
 
   const focusImage = (e, index) => {
-    const image = e.target;
+    if (currentFocus.current === index) return; //? Block focus on same image
+
+    currentFocus.current = index;
     dispatch({
       type: "focusImage",
       value: index,
     });
 
-    canvasControl.setBackground(state.images[index][state.imageMode]);
+    canvasControl.setBackground(state.images[index].origin || "");
+
+    if (['inpainted', 'mask'].includes(state.imageMode)) {
+      canvasControl.addImage(state.images[index][state.imageMode] || "");
+    }
+
   };
 
   return (

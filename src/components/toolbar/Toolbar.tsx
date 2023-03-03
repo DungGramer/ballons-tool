@@ -29,7 +29,7 @@ const Toolbar = () => {
           size={32}
         />
       </button>
-      <button onClick={addBrush}>
+      {/* <button onClick={addBrush}>
         <BrushFill
           className={clsx({
             "rounded border-solid border-2 border-gray-400":
@@ -37,7 +37,7 @@ const Toolbar = () => {
           })}
           size={32}
         />
-      </button>
+      </button> */}
     </div>
   );
 };
