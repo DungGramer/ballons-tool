@@ -15,9 +15,14 @@ const Main = () => {
 
     // Add shortcut key
     document.addEventListener("keydown", canvasControl.shortcut);
+    // Add mouse wheel event
+    // document.addEventListener("wheel", canvasControl.mouseWheel);
+    wrapperRef.current.addEventListener("wheel", canvasControl.mouseWheel);
 
     return () => {
       document.removeEventListener("keydown", canvasControl.shortcut);
+      // document?.removeEventListener("wheel", canvasControl.mouseWheel);
+      wrapperRef.current?.removeEventListener("wheel", canvasControl.mouseWheel);
     }
   }, [state.focusImage]);
 

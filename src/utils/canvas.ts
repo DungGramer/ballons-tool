@@ -206,6 +206,29 @@ class CanvasControl {
       that.canvas.remove(that.canvas.getActiveObject() as any);
     }
   }
+
+  mouseWheel(e: WheelEvent) {
+    // Get image object
+    const imageLayer = that.canvas
+      .getObjects()
+      .find((obj) => obj.type === "image");
+
+    if (imageLayer) {
+      // Set image is active
+      that.canvas.setActiveObject(imageLayer);
+    }
+
+    // const imageLayer = that.canvas.getActiveObject();
+    if (imageLayer && imageLayer.type === "image") {
+      const opacity = imageLayer.get("opacity") || 1;
+
+      const opacityResult = opacity + e.deltaY / 2500;
+      if (opacityResult < 0 || opacityResult > 1) return;
+
+      imageLayer.set({ opacity: opacityResult });
+      that.canvas.renderAll();
+    }
+  }
 }
 
 export default CanvasControl;
