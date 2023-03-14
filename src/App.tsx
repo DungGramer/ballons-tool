@@ -57,12 +57,14 @@ export enum Tool {
   text = "text",
 }
 
+type ImageMode = "origin" | "inpainted" | "mask";
+
 interface Draft {
-  images: { origin?: string; inpainted?: string; mask?: string; state?: string }[];
+  images: { origin?: string; inpainted?: string; mask?: string; state?: string, imageMode?: ImageMode }[];
   projectName: string;
   process: number;
   focusImage: number;
-  imageMode: "origin" | "inpainted" | "mask";
+  imageMode: ImageMode;
   inpainted: string[];
   mask: string[];
   trans: string;

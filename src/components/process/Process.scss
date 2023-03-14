@@ -6,6 +6,7 @@ progress#progressBar {
   height: 4px;
   position: absolute;
   bottom: 0;
+  left: 0;
 
   background-color: $progressBarColor;
   transition: all $transitionTime ease-out;
