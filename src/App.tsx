@@ -41,7 +41,7 @@ interface Action {
   value: any;
 }
 export enum Step {
-  select = 0,
+  select,
   upload,
   ready,
   translate,
@@ -60,11 +60,16 @@ export enum Tool {
 type ImageMode = "origin" | "inpainted" | "mask";
 
 interface Draft {
-  images: { origin?: string; inpainted?: string; mask?: string; state?: string, imageMode?: ImageMode }[];
+  images: {
+    origin?: string;
+    inpainted?: string;
+    mask?: string;
+    state?: string;
+    imageMode?: ImageMode;
+  }[];
   projectName: string;
   process: number;
   focusImage: number;
-  imageMode: ImageMode;
   inpainted: string[];
   mask: string[];
   trans: string;
@@ -80,7 +85,10 @@ const reducer = (draft: Draft, action: Action) => {
       draft.images = [];
       draft.step = Step.upload;
       action.value.forEach((image, index) => {
-        draft.images[index] = { origin: URL.createObjectURL(image) };
+        draft.images[index] = {
+          origin: URL.createObjectURL(image),
+          imageMode: "origin",
+        };
       });
       return;
     case "setImageInpainted":
@@ -89,7 +97,7 @@ const reducer = (draft: Draft, action: Action) => {
     case "setImageMask":
       draft.images[action.value.index].mask = action.value.data;
       return;
-    case 'setImageState':
+    case "setImageState":
       draft.images[action.value.index].state = action.value.data;
       return;
     case "setProjectName":
@@ -106,7 +114,8 @@ const reducer = (draft: Draft, action: Action) => {
       draft.step = Step.translated;
       return;
     case "changeImageMode":
-      draft.imageMode = action.value;
+      // draft.imageMode = action.value;
+      draft.images[action.value.index].imageMode = action.value.mode;
       return;
     case "changeStep":
       draft.step = action.value;

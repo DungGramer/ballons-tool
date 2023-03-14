@@ -21,7 +21,13 @@ const Zoom = () => {
   const { canvasControl, dispatch, state } = useGlobalContext();
 
   const changeDiff = (val) => {
-    dispatch({ type: "changeImageMode", value: val });
+    dispatch({
+      type: "changeImageMode",
+      value: {
+        mode: val,
+        index: state.focusImage,
+      },
+    });
     canvasControl.addImage(state.images[state.focusImage][val]);
   };
 
@@ -31,7 +37,7 @@ const Zoom = () => {
         <select
           className="diff"
           onChange={(e) => changeDiff(e.target.value)}
-          value={state.imageMode}
+          value={state.images[state.focusImage].imageMode}
         >
           {diffOptions.map((option) => (
             <option key={option.value} value={option.value}>
