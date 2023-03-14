@@ -1,6 +1,9 @@
 import React from "react";
 import "./Toolbar.scss";
 import TextIcon from "remixicon-react/TextIcon";
+import ZoomInLineIcon from "remixicon-react/ZoomInLineIcon";
+import ZoomOutLineIcon from "remixicon-react/ZoomOutLineIcon";
+import ArrowGoBackFillIcon from "remixicon-react/ArrowGoBackFillIcon";
 import BrushFill from "remixicon-react/BrushFillIcon";
 import { Tool, useGlobalContext } from "../../App";
 import clsx from "clsx";
@@ -19,7 +22,26 @@ const Toolbar = () => {
   };
 
   return (
-    <div className="w-8 h-screen flex flex-col gap-3 ml-2 mt-2">
+    <div className="h-full flex items-center gap-5">
+      <button onClick={() => canvasControl.zoom("zoomIn")}>
+        <ZoomInLineIcon />
+      </button>
+      <button onClick={() => canvasControl.zoom("fit")}>Fit</button>
+      <button onClick={() => canvasControl.zoom("zoomOut")}>
+        <ZoomOutLineIcon />
+      </button>
+      <button>
+        <ArrowGoBackFillIcon />
+      </button>
+      <button onClick={addBrush}>
+        <BrushFill
+          className={clsx({
+            "rounded border-solid border-2 border-gray-400":
+              state.toolMode === Tool.brush,
+          })}
+          size={32}
+        />
+      </button>
       <button onClick={addText}>
         <TextIcon
           className={clsx({
@@ -29,15 +51,6 @@ const Toolbar = () => {
           size={32}
         />
       </button>
-      {/* <button onClick={addBrush}>
-        <BrushFill
-          className={clsx({
-            "rounded border-solid border-2 border-gray-400":
-              state.toolMode === Tool.brush,
-          })}
-          size={32}
-        />
-      </button> */}
     </div>
   );
 };

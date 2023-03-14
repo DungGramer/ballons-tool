@@ -1,11 +1,12 @@
+import saveAs from "file-saver";
 import JSZip from "jszip";
 import React, { memo, useCallback, useRef, useState } from "react";
 import { Step, useGlobalContext } from "../../App";
 import { ImgTrans, UploadImg } from "../../services/api";
-import Process from "../process/Process";
-import "./header.scss";
-import saveAs from "file-saver";
 import { blobToBase64 } from "../../utils/converter";
+import Process from "../process/Process";
+import Toolbar from "../toolbar/Toolbar";
+import "./header.scss";
 
 const Header = () => {
   const { state, dispatch } = useGlobalContext();
@@ -64,28 +65,34 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="header-wrapper flex items-center justify-between">
-        <button
-          onClick={() => {
-            if (!inputRef.current) return;
+      <div className="header-wrapper flex items-center justify-between h-full">
+        <section className="flex items-center gap-2 h-full">
+          <button
+            onClick={() => {
+              if (!inputRef.current) return;
+  
+              if (uploadImageAgain) importImage(inputRef.current);
+              inputRef.current.click();
+            }}
+            disabled={[Step.upload, Step.translate].includes(state.step)}
+            className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
+          >
+            Import Image
+          </button>
+  
+          <input
+            ref={inputRef}
+            type="file"
+            multiple
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={importImage}
+            hidden
+          />
 
-            if (uploadImageAgain) importImage(inputRef.current);
-            inputRef.current.click();
-          }}
-          disabled={[Step.upload, Step.translate].includes(state.step)}
-          className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
-        >
-          Import Image
-        </button>
+          <div className="vr" />
 
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          accept="image/png, image/jpeg, image/jpg"
-          onChange={importImage}
-          hidden
-        />
+          <Toolbar />
+        </section>
         <section className="flex gap-2">
           <button
             onClick={download}

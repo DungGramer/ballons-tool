@@ -15,7 +15,6 @@ function App() {
       <GlobalProvider>
         <Header />
         <section className="flex gap-2">
-          <Toolbar />
           <Sidebar />
           <Main />
           <RightSidebar />
@@ -114,7 +113,6 @@ const reducer = (draft: Draft, action: Action) => {
       draft.step = Step.translated;
       return;
     case "changeImageMode":
-      // draft.imageMode = action.value;
       draft.images[action.value.index].imageMode = action.value.mode;
       return;
     case "changeStep":
