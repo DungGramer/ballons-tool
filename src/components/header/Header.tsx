@@ -10,34 +10,23 @@ import "./header.scss";
 
 const Header = () => {
   const { state, dispatch } = useGlobalContext();
-  const [uploadImageAgain, setUploadImageAgain] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const [uploadImageAgain, setUploadImageAgain] = useState(false);
   const [startTranslate, setStartTranslate] = useState(false);
 
-  const importImage = useCallback((e) => {
-    dispatch({ type: "changeStep", value: Step.upload }); //? 1: upload
-    const images = [...e.target.files];
-
-    dispatch({ type: "setImages", value: images });
-
-    UploadImg(images).then((res) => {
-      dispatch({ type: "setProjectName", value: res }); //? 2: ready to translate
-    });
-  }, [state.images]);
 
   const translate = useCallback(() => {
     dispatch({ type: "changeStep", value: Step.translate }); //? 3: start translate
     ImgTrans(state.projectName).then((res) => {
       switch (res.code) {
         case 200:
-          setUploadImageAgain(false);
+          // setUploadImageAgain(false);
           setStartTranslate(true);
           break;
         case 4302:
           // Busy server
           return;
         case 4202:
-          setUploadImageAgain(true);
+          // setUploadImageAgain(true);
           break;
         default:
           return alert(res.message);
@@ -67,27 +56,14 @@ const Header = () => {
     <header className="header">
       <div className="header-wrapper flex items-center justify-between h-full">
         <section className="flex items-center gap-2 h-full">
-          <button
-            onClick={() => {
-              if (!inputRef.current) return;
-  
-              if (uploadImageAgain) importImage(inputRef.current);
-              inputRef.current.click();
-            }}
-            disabled={[Step.upload, Step.translate].includes(state.step)}
+        <button
+            onClick={translate}
             className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
+            disabled={state.step < Step.ready}
           >
-            Import Image
+            Run AI
           </button>
-  
-          <input
-            ref={inputRef}
-            type="file"
-            multiple
-            accept="image/png, image/jpeg, image/jpg"
-            onChange={importImage}
-            hidden
-          />
+          
 
           <div className="vr" />
 
@@ -99,15 +75,9 @@ const Header = () => {
             className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
             disabled={state.step < Step.translated}
           >
-            Download
+            Export files
           </button>
-          <button
-            onClick={translate}
-            className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
-            disabled={state.step < Step.ready}
-          >
-            Clear Text
-          </button>
+          
         </section>
       </div>
       <Process startTranslate={startTranslate} />
