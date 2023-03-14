@@ -28,8 +28,9 @@ function App() {
 
 interface Action {
   type:
-    | "setImagesInpainted"
-    | "setImagesMask"
+    | "setImageInpainted"
+    | "setImageMask"
+    | "setImageState"
     | "setProjectName"
     | "focusImage"
     | "setResult"
@@ -57,7 +58,7 @@ export enum Tool {
 }
 
 interface Draft {
-  images: { origin?: string; inpainted?: string; mask?: string }[];
+  images: { origin?: string; inpainted?: string; mask?: string; state?: string }[];
   projectName: string;
   process: number;
   focusImage: number;
@@ -80,11 +81,14 @@ const reducer = (draft: Draft, action: Action) => {
         draft.images[index] = { origin: URL.createObjectURL(image) };
       });
       return;
-    case "setImagesInpainted":
+    case "setImageInpainted":
       draft.images[action.value.index].inpainted = action.value.data;
       return;
-    case "setImagesMask":
+    case "setImageMask":
       draft.images[action.value.index].mask = action.value.data;
+      return;
+    case 'setImageState':
+      draft.images[action.value.index].state = action.value.data;
       return;
     case "setProjectName":
       draft.projectName = action.value?.data?.project_name;

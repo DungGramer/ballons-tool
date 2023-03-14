@@ -4,23 +4,40 @@ import "./Sidebar.scss";
 
 const Sidebar = () => {
   const { state, dispatch, canvasControl } = useGlobalContext();
-  const currentFocus = useRef(null);
+  const currentIndexFocus = useRef(null);
 
-  const focusImage = (e, index) => {
-    if (currentFocus.current === index) return; //? Block focus on same image
+  const focusImage = (e, newIndex) => {
+    if (currentIndexFocus.current === newIndex) return; //? Block focus on same image
 
-    currentFocus.current = index;
-    dispatch({
-      type: "focusImage",
-      value: index,
-    });
+    const oldIndex = currentIndexFocus.current;
+    
+    console.log(canvasControl.exportJSON());
+    if (typeof oldIndex === "number") {
+      dispatch({
+        type: "setImageState",
+        value: {
+          index: oldIndex,
+          data: canvasControl.exportJSON(),
+        },
+      });
+    }
+    if (state.images[newIndex]?.state) {
+      canvasControl.importJSON(state.images[newIndex]?.state);
+    } else {
+      canvasControl.clear();
+      canvasControl.setBackground(state.images[newIndex].origin || "");
 
-    canvasControl.setBackground(state.images[index].origin || "");
-
-    if (['inpainted', 'mask'].includes(state.imageMode)) {
-      canvasControl.addImage(state.images[index][state.imageMode] || "");
+      if (["inpainted", "mask"].includes(state.imageMode)) {
+        canvasControl.addImage(state.images[newIndex][state.imageMode] || "");
+      }
     }
 
+    currentIndexFocus.current = newIndex;
+
+    dispatch({
+      type: "focusImage",
+      value: newIndex,
+    });
   };
 
   return (

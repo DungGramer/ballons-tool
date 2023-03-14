@@ -26,22 +26,22 @@ const Process = ({ startTranslate }) => {
         const inpainted = data.inpainted[i];
         const mask = data.mask[i];
 
-        preloadImage(inpainted, "setImagesInpainted", i);
-        preloadImage(mask, "setImagesMask", i);
+        preloadImage(inpainted, "setImageInpainted", i);
+        preloadImage(mask, "setImageMask", i);
       }
     }
   }, [state.projectName, startTranslate]);
 
   const preloadImage = (
     url: string,
-    type: "setImagesInpainted" | "setImagesMask",
+    type: "setImageInpainted" | "setImageMask",
     index
   ) => {
     DownloadImageFiles(url).then((res: Blob) => {
       const url = URL.createObjectURL(res);
 
       switch (type) {
-        case "setImagesInpainted":
+        case "setImageInpainted":
           dispatch({
             type,
             value: {
@@ -50,7 +50,7 @@ const Process = ({ startTranslate }) => {
             },
           });
           break;
-        case "setImagesMask":
+        case "setImageMask":
           invertImage(url).then((data) => {
             dispatch({
               type,

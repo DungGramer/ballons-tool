@@ -57,7 +57,7 @@ class CanvasControl {
         img,
         that.canvas.renderAll.bind(that.canvas)
       );
-      that.zoom.bind(that)("fit");
+      that.zoom("fit");
     });
   }
 
@@ -135,8 +135,10 @@ class CanvasControl {
         selectable: false,
         evented: false,
       });
-
+      
+      that.removeOldImage();
       that.canvas.add(fabricImage);
+      that.setAutoLayer();
     });
   }
 
@@ -228,6 +230,38 @@ class CanvasControl {
       imageLayer.set({ opacity: opacityResult });
       that.canvas.renderAll();
     }
+  }
+
+  exportJSON() {
+    return that.canvas.toJSON();
+  }
+
+  importJSON(json: string) {
+    that.canvas.loadFromJSON(json, () => {
+      that.canvas.renderAll();
+      that.zoom("fit");
+      that.setAutoLayer();
+    });
+  }
+
+  setAutoLayer() {
+    that.canvas.getObjects().forEach((obj) => {
+      if (obj.type === "i-text") {
+        that.canvas.bringToFront(obj);
+      }
+
+      if (obj.type === "image") {
+        obj.set({
+          selectable: false,
+          evented: false,
+        });
+        that.canvas.sendToBack(obj);
+      }
+    });
+  }
+
+  clear() {
+    that.canvas.clear();
   }
 }
 
