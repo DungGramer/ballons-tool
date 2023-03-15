@@ -5,8 +5,6 @@ import Header from "./components/header/Header";
 import Main from "./components/main/Main";
 import RightSidebar from "./components/right-sidebar/RightSidebar";
 import Sidebar from "./components/sidebar/Sidebar";
-import Toolbar from "./components/toolbar/Toolbar";
-import Zoom from "./components/zoom/Zoom";
 import { canvasControl } from "./utils/canvas";
 
 function App() {
@@ -18,7 +16,7 @@ function App() {
           <Sidebar />
           <Main />
           <RightSidebar />
-          <Zoom />
+          {/* <Zoom /> */}
         </section>
       </GlobalProvider>
     </div>
@@ -65,6 +63,7 @@ interface Draft {
     mask?: string;
     state?: string;
     imageMode?: ImageMode;
+    undoState?: string[];
   }[];
   projectName: string;
   process: number;
@@ -87,6 +86,7 @@ const reducer = (draft: Draft, action: Action) => {
         draft.images[index] = {
           origin: URL.createObjectURL(image),
           imageMode: "origin",
+          undoState: [],
         };
       });
       return;

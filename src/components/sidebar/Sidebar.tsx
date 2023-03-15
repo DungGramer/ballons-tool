@@ -35,14 +35,18 @@ const Sidebar = () => {
       });
     }
     if (state.images[newIndex]?.state) {
-      canvasControl.importJSON(state.images[newIndex]?.state);
+      canvasControl.importJSON(state.images[newIndex]?.state || "");
     } else {
       canvasControl.clear();
       canvasControl.setBackground(state.images[newIndex].origin || "");
 
-      if (["inpainted", "mask"].includes(state.imageMode)) {
-        canvasControl.addImage(state.images[newIndex][state.imageMode] || "");
-      }
+      // if (!state.images[newIndex].imageMode) return;
+
+      // if (["inpainted", "mask"].includes(state.images[newIndex]?.imageMode)) {
+      //   canvasControl.addImage(
+      //     state.images[newIndex][state.images[newIndex]?.imageMode]
+      //   );
+      // }
     }
 
     currentIndexFocus.current = newIndex;
@@ -123,10 +127,12 @@ const Sidebar = () => {
         <>
           {state?.images?.map((image, index) => {
             return (
-              <div key={index} className="flex flex-col gap-2 sidebar-item">
-                <span
-                  className="text-center pt-2"
-                >{index + 1}</span>
+              <div key={index} className={
+                clsx("flex flex-col gap-2 sidebar-item", {
+                  'border-blue-400': index === state.focusImage,
+                })
+              }>
+                <span className="text-center pt-2">{index + 1}</span>
                 <img
                   src={image.origin}
                   alt={image.name}
