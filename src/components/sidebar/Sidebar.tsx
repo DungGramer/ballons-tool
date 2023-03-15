@@ -45,7 +45,7 @@ const Sidebar = () => {
   const importImage = useCallback(
     (e) => {
       dispatch({ type: "changeStep", value: Step.upload }); //? 1: upload
-      const images = [...e.target.files];
+      const images = [...e.target.files].sort((a, b) => a.name.localeCompare(b.name));
 
       dispatch({ type: "setImages", value: images });
 
@@ -68,7 +68,7 @@ const Sidebar = () => {
               inputRef.current.click();
             }}
             disabled={[Step.upload, Step.translate].includes(state.step)}
-            className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100 mt-5"
+            className="border border-gray-300 border-dashed rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100 mt-5"
           >
             Import Image
           </button>
