@@ -87,7 +87,7 @@ const Sidebar = () => {
         <>
           <div
             className={clsx(
-              "drag-box h-full flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-600 hover:bg-gray-50",
+              "drag-box h-full flex cursor-pointer flex-col items-center justify-center text-center rounded-lg border border-dashed border-gray-600 hover:bg-gray-50",
               {
                 "cursor-not-allowed hover:bg-white": [
                   Step.upload,
@@ -124,6 +124,9 @@ const Sidebar = () => {
           {state?.images?.map((image, index) => {
             return (
               <div key={index} className="flex flex-col gap-2 sidebar-item">
+                <span
+                  className="text-center pt-2"
+                >{index + 1}</span>
                 <img
                   src={image.origin}
                   alt={image.name}
