@@ -135,7 +135,6 @@ const Sidebar = () => {
                 <span className="text-center pt-2">{index + 1}</span>
                 <img
                   src={image.origin}
-                  alt={image.name}
                   onClick={(e) => focusImage(e, index)}
                 />
                 {/* <p>{image.name}</p> */}

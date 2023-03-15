@@ -12,12 +12,21 @@ const Toolbar = () => {
   const { canvasControl, dispatch, state } = useGlobalContext();
 
   const addText = () => {
+    if (state.toolMode === Tool.text) {
+      dispatch({ type: "setTool", value: "" });
+      return;
+    }
+
     dispatch({ type: "setTool", value: Tool.text });
     canvasControl.addText();
   };
 
   const addBrush = () => {
-    dispatch({ type: "setTool", value: Tool.brush });
+    if (state.toolMode === Tool.brush) {
+      dispatch({ type: "setTool", value: "" });
+    } else {
+      dispatch({ type: "setTool", value: Tool.brush });
+    }
     canvasControl.addBrush();
   };
 
@@ -39,7 +48,7 @@ const Toolbar = () => {
           className="diff"
           onChange={(e) => changeDiff(e.target.value)}
           value={state.images[state.focusImage]?.imageMode}
-          title='Change Image Mode'
+          title="Change Image Mode"
         >
           {diffOptions.map((option) => (
             <option key={option.value} value={option.value}>

@@ -151,9 +151,6 @@ class CanvasControl {
   }
 
   addBrush() {
-    console.log(`📕 this.canvas.isDrawingMode - 156:canvas.ts \n`, this.canvas.isDrawingMode);
-    console.log(`📕 that.canvas.isDrawingMode - 156:canvas.ts \n`, that.canvas.isDrawingMode);
-
     if (this.canvas.isDrawingMode) {
       this.canvas.isDrawingMode = false;
       return;
