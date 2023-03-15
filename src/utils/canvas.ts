@@ -135,7 +135,7 @@ class CanvasControl {
         selectable: false,
         evented: false,
       });
-      
+
       that.removeOldImage();
       that.canvas.add(fabricImage);
       that.setAutoLayer();
@@ -148,6 +148,20 @@ class CanvasControl {
         that.canvas.remove(obj);
       }
     });
+  }
+
+  addBrush() {
+    console.log(`📕 this.canvas.isDrawingMode - 156:canvas.ts \n`, this.canvas.isDrawingMode);
+    console.log(`📕 that.canvas.isDrawingMode - 156:canvas.ts \n`, that.canvas.isDrawingMode);
+
+    if (this.canvas.isDrawingMode) {
+      this.canvas.isDrawingMode = false;
+      return;
+    }
+
+    this.canvas.isDrawingMode = true;
+    this.canvas.freeDrawingBrush.color = "#000";
+    this.canvas.freeDrawingBrush.width = 5;
   }
 
   addText() {

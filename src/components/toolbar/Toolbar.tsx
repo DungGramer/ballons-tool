@@ -18,7 +18,7 @@ const Toolbar = () => {
 
   const addBrush = () => {
     dispatch({ type: "setTool", value: Tool.brush });
-    // canvasControl.addBrush();
+    canvasControl.addBrush();
   };
 
   const changeDiff = (val) => {
