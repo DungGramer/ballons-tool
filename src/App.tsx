@@ -14,7 +14,7 @@ function App() {
     <div className="App h-screen flex flex-col">
       <GlobalProvider>
         <Header />
-        <section className="flex gap-2">
+        <section className="flex gap-2 main-wrapper">
           <Sidebar />
           <Main />
           <RightSidebar />

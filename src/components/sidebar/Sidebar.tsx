@@ -1,11 +1,23 @@
+import clsx from "clsx";
 import React, { memo, useCallback, useRef } from "react";
 import { Step, useGlobalContext } from "../../App";
 import { UploadImg } from "../../services/api";
+import useSetDragFile from "../../utils/useSetDragFile";
 import "./Sidebar.scss";
 
 const Sidebar = () => {
   const { state, dispatch, canvasControl } = useGlobalContext();
-  const currentIndexFocus = useRef(null);
+  const [currentIndexFocus, dragBox] = [useRef(null), useRef(null)];
+
+  const onChangeFile = useCallback(
+    (e) => {
+      const files = e.target.files;
+      if (files.length === 0) return;
+
+      importImage([...files]);
+    },
+    [state.images]
+  );
 
   const focusImage = (e, newIndex) => {
     if (currentIndexFocus.current === newIndex) return; //? Block focus on same image
@@ -43,9 +55,9 @@ const Sidebar = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const importImage = useCallback(
-    (e) => {
+    (files) => {
       dispatch({ type: "changeStep", value: Step.upload }); //? 1: upload
-      const images = [...e.target.files].sort((a, b) => a.name.localeCompare(b.name));
+      const images = files.sort((a, b) => a.name.localeCompare(b.name));
 
       dispatch({ type: "setImages", value: images });
 
@@ -56,29 +68,54 @@ const Sidebar = () => {
     [state.images]
   );
 
+  const handleClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!inputRef.current) return;
+      inputRef.current.click();
+    },
+    [inputRef]
+  );
+
+  useSetDragFile(dragBox, importImage);
+
   return (
-    <div className="max-w-xs w-1/3 sidebar h-screen flex flex-col">
+    <div className="max-w-xs w-1/3 sidebar h-full flex flex-col">
       {state.images.length === 0 ? (
         <>
-          <button
-            onClick={() => {
-              if (!inputRef.current) return;
-
-              // if (uploadImageAgain) importImage(inputRef.current);
-              inputRef.current.click();
-            }}
-            disabled={[Step.upload, Step.translate].includes(state.step)}
-            className="border border-gray-300 border-dashed rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100 mt-5"
+          <div
+            className={clsx(
+              "drag-box h-full flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-600 hover:bg-gray-50",
+              {
+                "cursor-not-allowed hover:bg-white": [
+                  Step.upload,
+                  Step.translate,
+                ].includes(state.step),
+              }
+            )}
+            onClick={handleClick}
+            ref={dragBox}
           >
-            Import Image
-          </button>
-
+            Drag and drop your image here or{" "}
+            <span
+              className={clsx("text-blue-500", {
+                "cursor-not-allowed": [Step.upload, Step.translate].includes(
+                  state.step
+                ),
+              })}
+              onClick={handleClick}
+            >
+              browse
+            </span>
+          </div>
           <input
             ref={inputRef}
             type="file"
             multiple
             accept="image/png, image/jpeg, image/jpg"
-            onChange={importImage}
+            onChange={onChangeFile}
             hidden
           />
         </>
