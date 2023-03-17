@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useMemo } from "react";
-import { useImmerReducer } from "use-immer";
+import { current } from "immer";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
+import { useImmer, useImmerReducer } from "use-immer";
 import "./App.css";
 import Header from "./components/header/Header";
 import Main from "./components/main/Main";
 import RightSidebar from "./components/right-sidebar/RightSidebar";
 import Sidebar from "./components/sidebar/Sidebar";
-import { canvasControl } from "./utils/canvas";
+import CanvasControl, { canvasControl, initDispatch } from "./utils/canvas";
 
 function App() {
   return (
@@ -34,6 +35,8 @@ interface Action {
     | "changeStep"
     | "setImages"
     | "setTool"
+    | "setUndo"
+    | "setExportImage"
     | "changeImageMode";
   value: any;
 }
@@ -64,6 +67,7 @@ interface Draft {
     state?: string;
     imageMode?: ImageMode;
     undoState?: string[];
+    export?: string;
   }[];
   projectName: string;
   process: number;
@@ -87,6 +91,7 @@ const reducer = (draft: Draft, action: Action) => {
           origin: URL.createObjectURL(image),
           imageMode: "origin",
           undoState: [],
+          export: "",
         };
       });
       return;
@@ -99,12 +104,18 @@ const reducer = (draft: Draft, action: Action) => {
     case "setImageState":
       draft.images[action.value.index].state = action.value.data;
       return;
+    case "setExportImage":
+      if (draft.images?.length && draft.focusImage !== -1) {
+        draft.images[draft.focusImage].export = action.value;
+      }
+      return;
     case "setProjectName":
       draft.projectName = action.value?.data?.project_name;
       draft.step = Step.ready;
       return;
     case "focusImage":
       draft.focusImage = action.value;
+      draft.images[draft.focusImage].undoState = []; //? clear undo state
       return;
     case "setResult":
       draft.inpainted = action.value?.inpainted;
@@ -121,6 +132,13 @@ const reducer = (draft: Draft, action: Action) => {
     case "setTool":
       draft.toolMode = action.value;
       return;
+    case "setUndo":
+      console.log(current(draft));
+      if (draft.images?.length && draft.focusImage !== -1) {
+        Array.isArray(draft.images[draft.focusImage]?.undoState) ||
+          (draft.images[draft.focusImage].undoState = [action.value]);
+      }
+      return;
     default:
       return draft;
   }
@@ -132,17 +150,27 @@ const initialState = {
   images: [],
   imageMode: "origin",
   step: Step.select,
+  focusImage: -1,
 };
 
 const GlobalContext = createContext({});
 
 const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useImmerReducer<any, any>(reducer, initialState);
+  const [CV, setSV] = useImmer(null);
 
   const memoizedValue = useMemo(
     () => ({ state, dispatch, canvasControl }),
     [state, dispatch, canvasControl]
   );
+
+  useEffect(() => {
+    initDispatch(dispatch);
+  }, []);
+
+  useEffect(() => {
+    console.log(`📕 CV - 150:App.tsx \n`, CV);
+  }, [CV]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>

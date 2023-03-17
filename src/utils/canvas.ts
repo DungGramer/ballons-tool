@@ -9,6 +9,9 @@ class CanvasControl {
   undoStack: any[] = [];
   redoStack: any[] = [];
   pauseSaving: boolean = false;
+  dispatch: any;
+  width: number;
+  height: number;
 
   constructor() {}
 
@@ -27,10 +30,12 @@ class CanvasControl {
     that.canvas.on("object:added", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
       if (!that.pauseSaving) {
+        console.log(`📕 e - 29:canvas.ts \n`, e);
         console.log(`📕 added \n`, that.undoStack, that.redoStack);
 
         if (imageType) return;
         that.undoStack.push(JSON.stringify(that.canvas));
+        that.onChanges();
         that.redoStack = [];
       }
     });
@@ -41,7 +46,9 @@ class CanvasControl {
       if (!that.pauseSaving) {
         console.log(`📕 modified \n`, that.undoStack, that.redoStack);
         if (imageType) return;
+
         that.undoStack.push(JSON.stringify(that.canvas));
+        that.onChanges();
         that.redoStack = [];
       }
     });
@@ -52,10 +59,28 @@ class CanvasControl {
       if (!that.pauseSaving) {
         console.log(`📕 removed \n`, that.undoStack, that.redoStack);
         if (imageType) return;
+
         that.undoStack.push(JSON.stringify(that.canvas));
+        that.onChanges();
         that.redoStack = [];
       }
     });
+  }
+
+  onChanges() {
+    if (!that.canvas || that.dispatch instanceof Function === false) return;
+
+    that.dispatch({ type: "setUndo", value: JSON.stringify(that.canvas) });
+    that.dispatch({
+      type: "setExportImage",
+      value: that.exportCanvasToImage(),
+    });
+  }
+
+  initSetState(S) {
+    if (S) {
+      that.dispatch = S;
+    }
   }
 
   setBackground(url: string) {
@@ -71,6 +96,7 @@ class CanvasControl {
   }
 
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
+    if (!that.canvas.backgroundImage) return;
     const img = that.canvas.backgroundImage.getElement();
 
     const { width, height } = img;
@@ -272,10 +298,27 @@ class CanvasControl {
   }
 
   exportRedoStack() {
-    const redoStack = that.redoStack.slice(0); //? Fastest way to clone array
+    const redoStack = that.redoStack.slice(0);
     that.redoStack = [];
 
     return redoStack;
+  }
+
+  exportCanvasToImage() {
+    // const transform = that.canvas.viewportTransform.slice(0);
+    // that.canvas.viewportTransform = [1, 0, 0, 1, 0, 0];
+
+    const data = that.canvas.toDataURL({
+      format: "jpeg",
+      multiplier: 2,
+      quality: 0.8
+    });
+
+    // that.canvas.viewportTransform = transform;
+    that.canvas.renderAll();
+
+    console.log(`📕 data - 322:canvas.ts \n`, data);
+    return data;
   }
 
   cleanUndoStack() {
@@ -314,5 +357,6 @@ class CanvasControl {
 export default CanvasControl;
 
 const that = new CanvasControl();
+export const initDispatch = (setF) => that.initSetState(setF);
 
 export { that as canvasControl };

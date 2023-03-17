@@ -39,7 +39,7 @@ const Header = () => {
 
     const zip = new JSZip();
     const imagesList = state.images.map(
-      (image) => image[state.imageMode]
+      (image) => image?.export
     ) as string[];
 
     imagesList.forEach((image, index) => {
