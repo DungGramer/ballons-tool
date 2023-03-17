@@ -127,16 +127,15 @@ const Sidebar = () => {
         <>
           {state?.images?.map((image, index) => {
             return (
-              <div key={index} className={
-                clsx("flex flex-col gap-2 sidebar-item", {
-                  'border-blue-400': index === state.focusImage,
-                })
-              }>
+              <div
+                key={index}
+                className={clsx("flex flex-col gap-2 sidebar-item cursor-pointer", {
+                  "border-blue-400": index === state.focusImage,
+                })}
+                onClick={(e) => focusImage(e, index)}
+              >
                 <span className="text-center pt-2">{index + 1}</span>
-                <img
-                  src={image.origin}
-                  onClick={(e) => focusImage(e, index)}
-                />
+                <img src={image.origin} />
                 {/* <p>{image.name}</p> */}
               </div>
             );

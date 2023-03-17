@@ -209,13 +209,16 @@ class CanvasControl {
   }
 
   shortcut(e: KeyboardEvent) {
+    const activeObj = that.canvas.getActiveObject();
+    const notEditText = activeObj?.isEditing;
+
     if (e.key === "z" && e.ctrlKey) {
       that.undo();
     } else if (e.key === "y" && e.ctrlKey) {
       that.redo();
     } else if (e.key === "t" && e.ctrlKey) {
       that.addText();
-    } else if (e.key === "Delete" || e.key === "Backspace") {
+    } else if (e.key === "Delete" && !notEditText) {
       that.canvas.remove(that.canvas.getActiveObject() as any);
     }
   }
