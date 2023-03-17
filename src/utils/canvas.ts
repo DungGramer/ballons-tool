@@ -25,24 +25,33 @@ class CanvasControl {
     });
 
     that.canvas.on("object:added", (e) => {
+      const imageType = e.target?.cacheKey === "image-overlay";
       if (!that.pauseSaving) {
         console.log(`📕 added \n`, that.undoStack, that.redoStack);
+
+        if (imageType) return;
         that.undoStack.push(JSON.stringify(that.canvas));
         that.redoStack = [];
       }
     });
 
     that.canvas.on("object:modified", (e) => {
+      const imageType = e.target?.cacheKey === "image-overlay";
+
       if (!that.pauseSaving) {
         console.log(`📕 modified \n`, that.undoStack, that.redoStack);
+        if (imageType) return;
         that.undoStack.push(JSON.stringify(that.canvas));
         that.redoStack = [];
       }
     });
 
     that.canvas.on("object:removed", (e) => {
+      const imageType = e.target?.cacheKey === "image-overlay";
+
       if (!that.pauseSaving) {
         console.log(`📕 removed \n`, that.undoStack, that.redoStack);
+        if (imageType) return;
         that.undoStack.push(JSON.stringify(that.canvas));
         that.redoStack = [];
       }
@@ -134,6 +143,7 @@ class CanvasControl {
       const fabricImage = new fabric.Image(img.getElement(), {
         selectable: false,
         evented: false,
+        cacheKey: "image-overlay",
       });
 
       that.removeOldImage();
@@ -151,14 +161,18 @@ class CanvasControl {
   }
 
   addBrush() {
-    if (this.canvas.isDrawingMode) {
-      this.canvas.isDrawingMode = false;
-      return;
-    }
+    // if (this.canvas.isDrawingMode) {
+    //   this.canvas.isDrawingMode = false;
+    //   return;
+    // }
 
     this.canvas.isDrawingMode = true;
     this.canvas.freeDrawingBrush.color = "#000";
     this.canvas.freeDrawingBrush.width = 5;
+  }
+
+  disableBrush() {
+    this.canvas.isDrawingMode = false;
   }
 
   addText() {
@@ -188,7 +202,7 @@ class CanvasControl {
     that.redoStack.push(that.undoStack.pop());
     console.log(that.undoStack);
     let prev = that.undoStack[that.undoStack.length - 1];
-    prev ||= `{}`;
+    if (!prev) return (that.pauseSaving = false);
 
     that.canvas.loadFromJSON(prev, () => {
       that.canvas.renderAll();
@@ -248,6 +262,24 @@ class CanvasControl {
 
   exportJSON() {
     return that.canvas.toJSON();
+  }
+
+  exportUndoStack() {
+    const undoStack = that.undoStack.slice(0); //? Fastest way to clone array
+    that.undoStack = [];
+
+    return undoStack;
+  }
+
+  exportRedoStack() {
+    const redoStack = that.redoStack.slice(0); //? Fastest way to clone array
+    that.redoStack = [];
+
+    return redoStack;
+  }
+
+  cleanUndoStack() {
+    that.undoStack = [];
   }
 
   importJSON(json: string) {

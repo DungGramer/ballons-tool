@@ -48,7 +48,7 @@ const Sidebar = () => {
       //   );
       // }
     }
-
+    canvasControl.cleanUndoStack();
     currentIndexFocus.current = newIndex;
 
     dispatch({

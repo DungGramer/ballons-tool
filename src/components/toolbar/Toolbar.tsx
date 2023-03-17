@@ -18,16 +18,18 @@ const Toolbar = () => {
     }
 
     dispatch({ type: "setTool", value: Tool.text });
+    canvasControl.disableBrush();
     canvasControl.addText();
   };
 
   const addBrush = () => {
     if (state.toolMode === Tool.brush) {
       dispatch({ type: "setTool", value: "" });
+      canvasControl.disableBrush();
     } else {
       dispatch({ type: "setTool", value: Tool.brush });
+      canvasControl.addBrush();
     }
-    canvasControl.addBrush();
   };
 
   const changeDiff = (val) => {
@@ -66,7 +68,7 @@ const Toolbar = () => {
       <button onClick={() => canvasControl.zoom("zoomOut")} title="Zoom Out">
         <ZoomOutLineIcon />
       </button>
-      <button title="Undo">
+      <button title="Undo" onClick={() => canvasControl.undo()}>
         <ArrowGoBackFillIcon />
       </button>
       <button onClick={addBrush} title="Brush">
