@@ -9,7 +9,7 @@ const Main = () => {
 
   useEffect(() => {
     if (!canvasRef.current || !wrapperRef.current) return;
-    
+
     canvasControl.init(canvasRef.current, wrapperRef.current);
     canvasControl.setBackground(state.focusImage?.src);
 
@@ -22,17 +22,21 @@ const Main = () => {
     return () => {
       document.removeEventListener("keydown", canvasControl.shortcut);
       // document?.removeEventListener("wheel", canvasControl.mouseWheel);
-      wrapperRef.current?.removeEventListener("wheel", canvasControl.mouseWheel);
-    }
+      wrapperRef.current?.removeEventListener(
+        "wheel",
+        canvasControl.mouseWheel
+      );
+    };
   }, [state.focusImage]);
 
   return (
-    <div
-      ref={wrapperRef}
-      className='main flex items-center justify-center flex-auto'
-    >
-      {/* <img src={state.focusImage?.src} alt={state.focusImage?.alt} /> */}
-      <canvas ref={canvasRef} id='canvas' />
+    <div className="main flex items-center justify-center flex-auto gap-6">
+      {state.focusImage > -1 && state.images[state.focusImage]?.origin && (
+        <img src={state.images[state.focusImage]?.origin} alt="" />
+      )}
+      <div className="relative" ref={wrapperRef}>
+        <canvas ref={canvasRef} id="canvas" />
+      </div>
     </div>
   );
 };
