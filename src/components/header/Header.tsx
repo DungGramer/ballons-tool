@@ -13,7 +13,6 @@ const Header = () => {
   // const [uploadImageAgain, setUploadImageAgain] = useState(false);
   const [startTranslate, setStartTranslate] = useState(false);
 
-
   const translate = useCallback(() => {
     dispatch({ type: "changeStep", value: Step.translate }); //? 3: start translate
     ImgTrans(state.projectName).then((res) => {
@@ -38,9 +37,7 @@ const Header = () => {
     dispatch({ type: "changeStep", value: Step.download }); //? 6: download
 
     const zip = new JSZip();
-    const imagesList = state.images.map(
-      (image) => image?.export
-    ) as string[];
+    const imagesList = state.images.map((image) => image?.export) as string[];
 
     imagesList.forEach((image, index) => {
       zip.file(`images/${index}.png`, blobToBase64(image));
@@ -56,18 +53,20 @@ const Header = () => {
     <header className="header">
       <div className="header-wrapper flex items-center justify-between h-full">
         <section className="flex items-center gap-2 h-full">
-        <button
+          <button
             onClick={translate}
             className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
-            disabled={state.step < Step.ready}
+            disabled={state.step < Step.ready || state.step >= Step.translated}
           >
             Run AI
           </button>
-          
 
-          <div className="vr" />
-
-          <Toolbar />
+          {state.step >= Step.translated && (
+            <>
+              <div className="vr" />
+              <Toolbar />
+            </>
+          )}
         </section>
         <section className="flex gap-2">
           <button
@@ -77,7 +76,6 @@ const Header = () => {
           >
             Export files
           </button>
-          
         </section>
       </div>
       <Process startTranslate={startTranslate} />

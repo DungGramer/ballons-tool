@@ -221,13 +221,35 @@ class CanvasControl {
     //   return;
     // }
 
+    const [brushSize, brushColor] = [10, "rgba(0,0,0,.5)"];
+
     this.canvas.isDrawingMode = true;
-    this.canvas.freeDrawingBrush.color = "#000";
-    this.canvas.freeDrawingBrush.width = 5;
+    this.canvas.freeDrawingBrush.color = brushColor;
+    this.canvas.freeDrawingBrush.width = brushSize;
+
+    // set cursor size
+    this.canvas.freeDrawingCursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${brushSize}' height='${brushSize}'><circle cx='${
+      brushSize / 2
+    }' cy='${brushSize / 2}' r='${
+      brushSize / 2
+    }' fill='${brushColor}' /></svg>") ${brushSize / 2} ${brushSize / 2}, auto`;
   }
 
   disableBrush() {
     this.canvas.isDrawingMode = false;
+  }
+  setBrushSize(size: number) {
+    that.canvas.freeDrawingBrush.width = size;
+
+    // set cursor size
+    const cursorSize = Math.round(size / 2) + 8;
+    that.canvas.freeDrawingCursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${cursorSize}' height='${cursorSize}'><circle cx='${
+      cursorSize / 2
+    }' cy='${cursorSize / 2}' r='${
+      cursorSize / 2
+    }' fill='rgba(0, 0, 0, 0.5)' /></svg>") ${cursorSize / 2} ${
+      cursorSize / 2
+    }, auto`;
   }
 
   addText() {
