@@ -53,3 +53,13 @@ export const DownloadImageFiles = async (url) => {
 
   return response.blob();
 };
+
+export const postPath = async (path) => {
+  const response = await fetch(`http://localhost:8008/upload`, {
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+    body: JSON.stringify({ path }),
+    redirect: "follow",
+  });
+  return response.json();
+}

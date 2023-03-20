@@ -1,5 +1,6 @@
 import { fabric } from "fabric";
 import { Draft } from "../App";
+import { postPath } from "../services/api";
 
 class CanvasControl {
   canvasElement: HTMLCanvasElement;
@@ -32,13 +33,26 @@ class CanvasControl {
 
     that.canvas.on("object:added", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
+      const pathType = Boolean(e.target?.path);
       if (!that.pauseSaving) {
-        console.log(`📕 e - 29:canvas.ts \n`, e);
+        console.log(`📕 e - 29:canvas.ts \n`, e.target);
         console.log(`📕 added \n`, that.undoStack, that.redoStack);
 
         if (imageType) return;
+
+        if (pathType) {
+          postPath(e.target).then((res) => {
+            console.log(`📕 res - 37:canvas.ts \n`, res);
+
+            that.addImage(res.image);
+
+            // Remove path
+            that.canvas.remove(e.target);
+          });
+        }
+
         that.undoStack.push(JSON.stringify(that.canvas));
-        that.onChanges();
+        // that.onChanges();
         that.redoStack = [];
       }
     });
@@ -184,6 +198,12 @@ class CanvasControl {
       that.removeOldImage();
       that.canvas.add(fabricImage);
       that.setAutoLayer();
+
+      // Add export image
+      that.dispatch({
+        type: "setExportImage",
+        value: that.exportCanvasToImage(),
+      });
     });
   }
 
@@ -274,7 +294,7 @@ class CanvasControl {
       that.addText();
     } else if (e.key === "Delete" && !notEditText) {
       that.canvas.remove(that.canvas.getActiveObject() as any);
-      
+
       that.dispatch({
         type: "setExportImage",
         value: that.exportCanvasToImage(),
