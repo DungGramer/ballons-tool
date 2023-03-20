@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import { Draft } from "../App";
 
 class CanvasControl {
   canvasElement: HTMLCanvasElement;
@@ -9,9 +10,11 @@ class CanvasControl {
   undoStack: any[] = [];
   redoStack: any[] = [];
   pauseSaving: boolean = false;
-  dispatch: any;
   width: number;
   height: number;
+  focusImage: number;
+  state: Draft;
+  dispatch: any;
 
   constructor() {}
 
@@ -61,7 +64,6 @@ class CanvasControl {
         if (imageType) return;
 
         that.undoStack.push(JSON.stringify(that.canvas));
-        that.onChanges();
         that.redoStack = [];
       }
     });
@@ -77,10 +79,13 @@ class CanvasControl {
     });
   }
 
-  initSetState(S) {
-    if (S) {
-      that.dispatch = S;
-    }
+  initSetState(state, dispatch) {
+    that.state = state;
+    that.dispatch = dispatch;
+  }
+
+  setCanvasState(state) {
+    that.state = state;
   }
 
   setBackground(url: string) {
@@ -237,6 +242,11 @@ class CanvasControl {
     that.canvas.loadFromJSON(prev, () => {
       that.canvas.renderAll();
       that.pauseSaving = false;
+
+      that.dispatch({
+        type: "setExportImage",
+        value: that.exportCanvasToImage(),
+      });
     });
   }
 
@@ -264,6 +274,11 @@ class CanvasControl {
       that.addText();
     } else if (e.key === "Delete" && !notEditText) {
       that.canvas.remove(that.canvas.getActiveObject() as any);
+      
+      that.dispatch({
+        type: "setExportImage",
+        value: that.exportCanvasToImage(),
+      });
     }
   }
 
@@ -315,13 +330,12 @@ class CanvasControl {
     const data = that.canvas.toDataURL({
       format: "jpeg",
       multiplier: 2,
-      quality: 0.8
+      quality: 0.8,
     });
 
     // that.canvas.viewportTransform = transform;
     that.canvas.renderAll();
 
-    console.log(`📕 data - 322:canvas.ts \n`, data);
     return data;
   }
 
@@ -361,6 +375,7 @@ class CanvasControl {
 export default CanvasControl;
 
 const that = new CanvasControl();
-export const initDispatch = (setF) => that.initSetState(setF);
+export const initDispatch = (state, dispatch) =>
+  that.initSetState(state, dispatch);
 
 export { that as canvasControl };

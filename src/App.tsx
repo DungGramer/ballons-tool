@@ -60,7 +60,7 @@ export enum Tool {
 
 type ImageMode = "origin" | "inpainted" | "mask";
 
-interface Draft {
+export interface Draft {
   images: {
     origin?: string;
     inpainted?: string;
@@ -79,7 +79,6 @@ interface Draft {
   step: Step;
   toolMode: Tool;
 }
-
 
 const reducer = (draft: Draft, action: Action) => {
   switch (action.type) {
@@ -133,7 +132,7 @@ const reducer = (draft: Draft, action: Action) => {
       draft.toolMode = action.value;
       return;
     case "setUndo":
-      console.log(current(draft));
+      // console.log(current(draft));
       if (draft.images?.length && draft.focusImage !== -1) {
         Array.isArray(draft.images[draft.focusImage]?.undoState) ||
           (draft.images[draft.focusImage].undoState = [action.value]);
@@ -165,12 +164,16 @@ const GlobalProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    initDispatch(dispatch);
+    initDispatch(state, dispatch);
   }, []);
 
   useEffect(() => {
-    console.log(`📕 CV - 150:App.tsx \n`, CV);
-  }, [CV]);
+    canvasControl.setCanvasState(state);
+  }, [state]);
+
+  // useEffect(() => {
+  //   console.log(`📕 CV - 150:App.tsx \n`, CV);
+  // }, [CV]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>
