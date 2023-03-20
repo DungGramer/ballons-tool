@@ -32,20 +32,20 @@ const Toolbar = () => {
     }
   };
 
-  const changeDiff = (val) => {
-    dispatch({
-      type: "changeImageMode",
-      value: {
-        mode: val,
-        index: state.focusImage,
-      },
-    });
-    canvasControl.addImage(state.images[state.focusImage][val]);
-  };
+  // const changeDiff = (val) => {
+  //   dispatch({
+  //     type: "changeImageMode",
+  //     value: {
+  //       mode: val,
+  //       index: state.focusImage,
+  //     },
+  //   });
+  //   canvasControl.addImage(state.images[state.focusImage][val]);
+  // };
 
   return (
     <div className="h-full flex items-center gap-5">
-      {state.step >= Step.translated && (
+      {/* {state.step >= Step.translated && (
         <select
           className="diff"
           onChange={(e) => changeDiff(e.target.value)}
@@ -58,7 +58,7 @@ const Toolbar = () => {
             </option>
           ))}
         </select>
-      )}
+      )} */}
       <button onClick={() => canvasControl.zoom("zoomIn")} title="Zoom In">
         <ZoomInLineIcon />
       </button>

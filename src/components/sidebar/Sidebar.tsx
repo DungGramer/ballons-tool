@@ -23,9 +23,7 @@ const Sidebar = () => {
     if (currentIndexFocus.current === newIndex) return; //? Block focus on same image
 
     const oldIndex = currentIndexFocus.current;
-
-    console.log(canvasControl.exportJSON());
-    if (typeof oldIndex === "number") {
+    if (typeof oldIndex === "number" && state.step >= Step.translated) {
       dispatch({
         type: "setImageState",
         value: {
@@ -34,19 +32,21 @@ const Sidebar = () => {
         },
       });
     }
-    if (state.images[newIndex]?.state) {
-      canvasControl.importJSON(state.images[newIndex]?.state || "");
-    } else {
-      canvasControl.clear();
-      canvasControl.setBackground(state.images[newIndex].origin || "");
+    if (state.step >= Step.translated && state.focusImage > -1) {
+      if (state.images[newIndex]?.state) {
+        canvasControl.importJSON(state.images[newIndex]?.state || "");
+      } else {
+        canvasControl.clear();
+        canvasControl.setBackground(state.images[newIndex]?.inpainted || "");
 
-      // if (!state.images[newIndex].imageMode) return;
+        // if (!state.images[newIndex].imageMode) return;
 
-      // if (["inpainted", "mask"].includes(state.images[newIndex]?.imageMode)) {
-      //   canvasControl.addImage(
-      //     state.images[newIndex][state.images[newIndex]?.imageMode]
-      //   );
-      // }
+        // if (["inpainted", "mask"].includes(state.images[newIndex]?.imageMode)) {
+        //   canvasControl.addImage(
+        //     state.images[newIndex][state.images[newIndex]?.imageMode]
+        //   );
+        // }
+      }
     }
     canvasControl.cleanUndoStack();
     currentIndexFocus.current = newIndex;
@@ -91,7 +91,7 @@ const Sidebar = () => {
         <>
           <div
             className={clsx(
-              "drag-box h-full flex cursor-pointer flex-col items-center justify-center text-center rounded-lg border border-dashed border-gray-600 hover:bg-gray-50",
+              "drag-box flex py-6 cursor-pointer flex-col items-center justify-center text-center rounded-lg border border-dashed border-gray-600 hover:bg-gray-50",
               {
                 "cursor-not-allowed hover:bg-white": [
                   Step.upload,
@@ -102,17 +102,7 @@ const Sidebar = () => {
             onClick={handleClick}
             ref={dragBox}
           >
-            Drag and drop your image here or{" "}
-            <span
-              className={clsx("text-blue-500", {
-                "cursor-not-allowed": [Step.upload, Step.translate].includes(
-                  state.step
-                ),
-              })}
-              onClick={handleClick}
-            >
-              browse
-            </span>
+            Upload Folder
           </div>
           <input
             ref={inputRef}
@@ -129,9 +119,12 @@ const Sidebar = () => {
             return (
               <div
                 key={index}
-                className={clsx("flex flex-col gap-2 sidebar-item cursor-pointer", {
-                  "border-blue-400": index === state.focusImage,
-                })}
+                className={clsx(
+                  "flex flex-col gap-2 sidebar-item cursor-pointer",
+                  {
+                    "border-blue-400": index === state.focusImage,
+                  }
+                )}
                 onClick={(e) => focusImage(e, index)}
               >
                 <span className="text-center pt-2">{index + 1}</span>

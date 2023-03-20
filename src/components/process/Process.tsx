@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Step, useGlobalContext } from "../../App";
 import { DownloadImageFiles, GetImgTransResult } from "../../services/api";
+import { canvasControl } from "../../utils/canvas";
 import invertImage from "../../utils/invertImage";
 import "./Process.scss";
 
@@ -24,10 +25,10 @@ const Process = ({ startTranslate }) => {
 
       for (let i = 0; i < data.inpainted.length; i++) {
         const inpainted = data.inpainted[i];
-        const mask = data.mask[i];
-
         preloadImage(inpainted, "setImageInpainted", i);
-        preloadImage(mask, "setImageMask", i);
+
+        // const mask = data.mask[i];
+        // preloadImage(mask, "setImageMask", i);
       }
     }
   }, [state.projectName, startTranslate]);
@@ -37,7 +38,7 @@ const Process = ({ startTranslate }) => {
     type: "setImageInpainted" | "setImageMask",
     index
   ) => {
-    DownloadImageFiles(url).then((res: Blob) => {
+    return DownloadImageFiles(url).then((res: Blob) => {
       const url = URL.createObjectURL(res);
 
       switch (type) {
@@ -62,6 +63,11 @@ const Process = ({ startTranslate }) => {
           });
           break;
       }
+
+      if (state.focusImage > -1 && index === state.focusImage)
+        canvasControl.setBackground(url); //? Set background when image is focused
+
+      return url;
     });
   };
 
@@ -79,7 +85,6 @@ const Process = ({ startTranslate }) => {
   }, [startTranslate]);
 
   if (process < 0 || process === 100) return null;
-
   return <progress value={process} max="100" id="progressBar" />;
 };
 

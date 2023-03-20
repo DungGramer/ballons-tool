@@ -95,6 +95,10 @@ class CanvasControl {
     });
   }
 
+  hasBackground() {
+    return !!that.canvas.backgroundImage;
+  }
+
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
     if (!that.canvas.backgroundImage) return;
     const img = that.canvas.backgroundImage.getElement();
