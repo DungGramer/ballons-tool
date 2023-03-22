@@ -32,7 +32,7 @@ const Sidebar = () => {
         },
       });
     }
-    if (state.step >= Step.translated && state.focusImage > -1) {
+    if (state.step >= Step.translated) {
       if (state.images[newIndex]?.state) {
         canvasControl.importJSON(state.images[newIndex]?.state || "");
       } else {
