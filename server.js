@@ -10,7 +10,8 @@ app.post('/upload', (req, res) => {
   console.log(req);
   res.send({
     status: 'ok',
-    image: 'https://i.imgur.com/sQpk5WE.png'
+    // image: 'https://i.imgur.com/sQpk5WE.png'
+    image: 'https://picsum.photos/500/1000'
   });
 });
 

@@ -1,6 +1,6 @@
 function uuidv4() {
   if (typeof window !== "undefined" && window.crypto) {
-    return window.crypto.getRandomValues(new Uint32Array(4)).join("-");
+    return window.crypto.randomUUID();
   }
 
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {

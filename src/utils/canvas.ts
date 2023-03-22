@@ -174,7 +174,7 @@ class CanvasControl {
           that.canvas.setZoom(widthCanvas / width);
         } else {
           // Portrait
-          that.canvas.setZoom(heightCanvas / height);
+          that.canvas.setZoom(widthCanvas / width);
         }
 
         // Set center image

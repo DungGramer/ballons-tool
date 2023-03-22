@@ -32,7 +32,9 @@ const Main = () => {
   return (
     <div className="main flex items-center justify-center flex-auto gap-6">
       {state.focusImage > -1 && state.images[state.focusImage]?.origin && (
-        <img src={state.images[state.focusImage]?.origin} alt="" />
+        <div className="flex items-center justify-center">
+          <img src={state.images[state.focusImage]?.origin} alt="" />
+        </div>
       )}
       <div className="relative" ref={wrapperRef}>
         <canvas ref={canvasRef} id="canvas" />

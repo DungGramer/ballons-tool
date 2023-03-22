@@ -17,6 +17,7 @@ body {
 img {
   user-select: none;
   -webkit-user-drag: none;
+  max-height: 100%;
 }
 
 ::-webkit-scrollbar {
