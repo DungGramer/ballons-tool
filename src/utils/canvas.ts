@@ -221,7 +221,7 @@ class CanvasControl {
     //   return;
     // }
 
-    const [brushSize, brushColor] = [10, "rgba(0,0,0,.5)"];
+    const [brushSize, brushColor] = [ Math.round(25 / 1.8), "rgba(0,0,0,.5)"];
 
     this.canvas.isDrawingMode = true;
     this.canvas.freeDrawingBrush.color = brushColor;
@@ -242,7 +242,7 @@ class CanvasControl {
     that.canvas.freeDrawingBrush.width = size;
 
     // set cursor size
-    const cursorSize = Math.round(size / 2) + 8;
+    const cursorSize = Math.round(size / 1.8);
     that.canvas.freeDrawingCursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${cursorSize}' height='${cursorSize}'><circle cx='${
       cursorSize / 2
     }' cy='${cursorSize / 2}' r='${

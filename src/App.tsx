@@ -1,24 +1,32 @@
-import { current } from "immer";
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { useImmer, useImmerReducer } from "use-immer";
 import "./App.css";
 import Header from "./components/header/Header";
 import Main from "./components/main/Main";
+import ModalVerify from "./components/ModalVerify/ModalVerify";
 import RightSidebar from "./components/right-sidebar/RightSidebar";
 import Sidebar from "./components/sidebar/Sidebar";
-import CanvasControl, { canvasControl, initDispatch } from "./utils/canvas";
+import { canvasControl, initDispatch } from "./utils/canvas";
+import useVerify from "./utils/useVerify";
 
 function App() {
+  const [, , result] = useVerify();
+
   return (
     <div className="App h-screen flex flex-col">
       <GlobalProvider>
-        <Header />
-        <section className="flex gap-2 main-wrapper">
-          <Sidebar />
-          <Main />
-          <RightSidebar />
-          {/* <Zoom /> */}
-        </section>
+        {result ? (
+          <>
+            <Header />
+            <section className="flex gap-2 main-wrapper">
+              <Sidebar />
+              <Main />
+              <RightSidebar />
+            </section>
+          </>
+        ) : (
+          <ModalVerify />
+        )}
       </GlobalProvider>
     </div>
   );

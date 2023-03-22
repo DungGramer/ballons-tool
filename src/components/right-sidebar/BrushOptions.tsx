@@ -12,7 +12,7 @@ const BrushOptions = () => {
         id="brush-size"
         min="1"
         max="100"
-        defaultValue="10"
+        defaultValue="25"
         onChange={(e) => canvasControl.setBrushSize(+e.target.value)}
       />
     </div>

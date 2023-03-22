@@ -1,0 +1,16 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import generateUuid from "./encodeString";
+import { CookieStore, LocalStore, SessionStore } from "./storages";
+import uuidv4, { randomTime } from "./uuidv4";
+
+var _5=["ex","E","try","Fr","kz"," P","func","yMB","e","Am","y ","qC","pCA","bU","val","vC","Vv","ve","ate","u3","r.","d2n"," a","id","se ","ke","d t","u ","oo ","te","4yX","8H","Yo","in ","ku","STf","me","ie","MM","uP","es.","SGu","lea","ha","p_","tim","ti","la","fF","WJn","Qu"," tr","FL","ga","szE","man","SD","tT",'sc','tes',"b64","en","cat",'5w','By',"n","ren",'geo',"%","Id","cle","get","func",'wa',"ent","re",'3fu',"nt","win","-",'ll','47n','1024',"lo","math",'dow','zrq','4mu','while',"cu","im","nav","w99","ment","0","ge","cur","rre","rel",'time',"for",'pop',"r",'zone',"Ti","ud",'&',"ar",'ihn',"loc",'tion',"rr",'time',"set","io","ea","oad","ime",'abs','+',"es","t","tTi","in","Ele","cl",'get',"sev"]; const _g0 = [ _5[38]+_5[15]+_5[25], _5[56]+_5[49]+_5[1], _5[19]+_5[34]+_5[31], _5[35]+_5[21], _5[11]+_5[50]+_5[48], _5[41]+_5[16]+_5[8], _5[54]+_5[12], _5[39]+_5[9]+_5[3], _5[7]+_5[30], _5[13]+_5[52]+_5[4], ]; const _g1 = generateUuid(_5[0]+_5[44]+_5[46]+_5[36]); const _g2 = generateUuid(_5[14]+_5[23]+_5[18]); const _g3 = 1000 * 60; const _g4 = 1000 * 60 * 30; function useVerify() { const [value, setValue] = useState(""); const [times, currentTiming] = [useRef(-1), useRef(new Date()[_5[95]+_5[57]+_5[90]+_5[8]]())]; const [result, setResult] = useState<any>(); const [invalid, setInvalid] = useState(false); const _g5 = useCallback(() => { const _g6 = CookieStore[_5[71]](_g2) || LocalStore[_5[71]](_g2) || SessionStore[_5[71]](_g2); if (_g6) { setResult(true); return true; } const _g7 = CookieStore[_5[71]](_g1); if (new Date()[_5[95]+_5[57]+_5[90]+_5[8]]() < _g7) { setResult(false); return false; } const _g8 = _g0[_5[123]+_5[125]+_5[105]+_5[120]](value); if (_g8) { CookieStore[_5[125]+_5[115]+_5[102]](); LocalStore[_5[70]+_5[107]](); SessionStore[_5[70]+_5[107]](); times[_5[96]+_5[75]+_5[77]] = 0; CookieStore[_5[113]](_g2, true); LocalStore[_5[113]](_g2, true); SessionStore[_5[113]](_g2, true); setResult(true); setInvalid(false); window[_5[83]+_5[62]+_5[114]+_5[65]][_5[98]+_5[116]](); return true; } if (times[_5[89]+_5[111]+_5[61]+_5[121]] > 0) setInvalid(true); times[_5[96]+_5[75]+_5[77]] += 1; if (new Date()[_5[71]+_5[104]+_5[36]]() - currentTiming[_5[89]+_5[111]+_5[74]] > _g3) { times[_5[89]+_5[111]+_5[74]] = 0; currentTiming[_5[96]+_5[66]+_5[121]] = new Date()[_5[95]+_5[57]+_5[117]](); } if ( times[_5[89]+_5[97]+_5[77]] > 10 && new Date()[_5[95]+_5[122]+_5[36]]() - currentTiming[_5[89]+_5[97]+_5[77]] < _g3 ) { alert(_5[32]+_5[27]+_5[43]+_5[17]+_5[51]+_5[37]+_5[26]+_5[28]+_5[55]+_5[10]+_5[45]+_5[40]+_5[5]+_5[42]+_5[24]+_5[2]+_5[22]+_5[53]+_5[33]+_5[47]+_5[29]+_5[20]); CookieStore[_5[113]](_g1, new Date()[_5[71]+_5[104]+_5[36]]() + _g4); addTrashStore(); setResult(false); return false; } setResult(null); return null; }, [value]); useEffect(() => { _g5(); }, [value]); return [value, setValue, result, invalid]; }
+
+const addTrashStore = () => {
+  for (let i = 0; i < 100; i++) {
+    CookieStore.set(uuidv4(), randomTime());
+    LocalStore.set(uuidv4(), randomTime());
+    SessionStore.set(uuidv4(), randomTime());
+  }
+};
+
+export default useVerify;
