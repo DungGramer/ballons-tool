@@ -45,6 +45,7 @@ interface Action {
     | "setTool"
     | "setUndo"
     | "setExportImage"
+    | 'undo'
     | "changeImageMode";
   value: any;
 }
@@ -89,6 +90,7 @@ export interface Draft {
 }
 
 const reducer = (draft: Draft, action: Action) => {
+  console.log(`📕 action.type - 93:App.tsx \n`, action.type);
   switch (action.type) {
     case "setImages":
       draft.images = [];
@@ -122,7 +124,6 @@ const reducer = (draft: Draft, action: Action) => {
       return;
     case "focusImage":
       draft.focusImage = action.value;
-      draft.images[draft.focusImage].undoState = []; //? clear undo state
       return;
     case "setResult":
       draft.inpainted = action.value?.inpainted;
@@ -140,11 +141,17 @@ const reducer = (draft: Draft, action: Action) => {
       draft.toolMode = action.value;
       return;
     case "setUndo":
-      // console.log(current(draft));
-      if (draft.images?.length && draft.focusImage !== -1) {
-        Array.isArray(draft.images[draft.focusImage]?.undoState) ||
-          (draft.images[draft.focusImage].undoState = [action.value]);
-      }
+      if (!draft.images?.length || draft.focusImage === -1) return;
+      // if (Array.isArray(draft.images[draft.focusImage]?.undoState))
+      console.log(`📕 action.value - 146:App.tsx \n`, action.value);
+      if (Array.isArray(action.value))
+        draft.images[draft.focusImage].undoState = action.value;
+      else draft.images[draft.focusImage].undoState.push(action.value);
+      return;
+    case 'undo':
+      console.log(`📕 undo - 151:App.tsx \n`);
+      if (!draft.images?.length || draft.focusImage === -1) return;
+      draft.images[draft.focusImage].undoState = action.value;
       return;
     default:
       return draft;

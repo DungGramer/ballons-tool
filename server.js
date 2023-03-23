@@ -11,7 +11,7 @@ app.post('/upload', (req, res) => {
   res.send({
     status: 'ok',
     // image: 'https://i.imgur.com/sQpk5WE.png'
-    image: 'https://picsum.photos/500/1000'
+    image: 'https://picsum.photos/500/1000' + `?${Math.random()}`
   });
 });
 

@@ -11,6 +11,7 @@ class CanvasControl {
   undoStack: any[] = [];
   redoStack: any[] = [];
   pauseSaving: boolean = false;
+  isRestore: boolean = false;
   width: number;
   height: number;
   focusImage: number;
@@ -34,59 +35,58 @@ class CanvasControl {
     that.canvas.on("object:added", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
       const pathType = Boolean(e.target?.path);
-      if (!that.pauseSaving) {
-        console.log(`📕 e - 29:canvas.ts \n`, e.target);
-        console.log(`📕 added \n`, that.undoStack, that.redoStack);
+      console.log(`📕 that.pauseSaving - 38:canvas.ts \n`, that.isRestore, that.pauseSaving);
+      if (that.pauseSaving || that.isRestore) return;
 
-        if (imageType) return;
+      // console.log(`📕 e - 29:canvas.ts \n`, e.target);
+      console.log(`📕 added \n`, that.undoStack, that.redoStack);
 
-        if (pathType) {
-          postPath(e.target).then((res) => {
-            console.log(`📕 res - 37:canvas.ts \n`, res);
+      if (imageType) return;
 
-            that.addImage(res.image);
+      if (pathType) {
+        postPath(e.target).then((res) => {
+          that.addImage(res.image);
 
-            // Remove path
-            that.canvas.remove(e.target);
-          });
-        }
-
-        that.undoStack.push(JSON.stringify(that.canvas));
-        // that.onChanges();
-        that.redoStack = [];
+          // Remove path
+          that.canvas.remove(e.target);
+        });
       }
+
+      that.undoStack.push(that.exportJSON());
+      that.onChanges();
+      that.redoStack = [];
     });
 
     that.canvas.on("object:modified", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
+      if (that.pauseSaving || that.isRestore) return;
 
-      if (!that.pauseSaving) {
-        console.log(`📕 modified \n`, that.undoStack, that.redoStack);
-        if (imageType) return;
+      console.log(`📕 modified \n`, that.undoStack, that.redoStack);
+      if (imageType) return;
 
-        that.undoStack.push(JSON.stringify(that.canvas));
-        that.onChanges();
-        that.redoStack = [];
-      }
+      that.undoStack.push(that.exportJSON());
+      that.onChanges();
+      that.redoStack = [];
     });
 
     that.canvas.on("object:removed", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
+      const pathType = Boolean(e.target?.path);
+      if (that.pauseSaving || that.isRestore) return;
+      if (pathType) return;
 
-      if (!that.pauseSaving) {
-        console.log(`📕 removed \n`, that.undoStack, that.redoStack);
-        if (imageType) return;
+      console.log(`📕 removed \n`, that.undoStack, that.redoStack);
+      if (imageType) return;
 
-        that.undoStack.push(JSON.stringify(that.canvas));
-        that.redoStack = [];
-      }
+      that.undoStack.push(that.exportJSON());
+      that.redoStack = [];
     });
   }
 
   onChanges() {
     if (!that.canvas || that.dispatch instanceof Function === false) return;
 
-    that.dispatch({ type: "setUndo", value: JSON.stringify(that.canvas) });
+    that.dispatch({ type: "setUndo", value: that.exportJSON() });
     that.dispatch({
       type: "setExportImage",
       value: that.exportCanvasToImage(),
@@ -221,7 +221,7 @@ class CanvasControl {
     //   return;
     // }
 
-    const [brushSize, brushColor] = [ Math.round(25 / 1.8), "rgba(0,0,0,.5)"];
+    const [brushSize, brushColor] = [Math.round(25 / 1.8), "rgba(0,0,0,.5)"];
 
     this.canvas.isDrawingMode = true;
     this.canvas.freeDrawingBrush.color = brushColor;
@@ -276,12 +276,12 @@ class CanvasControl {
 
   undo() {
     that.pauseSaving = true;
-    that.redoStack.push(that.undoStack.pop());
-    console.log(that.undoStack);
-    let prev = that.undoStack[that.undoStack.length - 1];
-    if (!prev) return (that.pauseSaving = false);
+    const undoState = [...that.state.images[that.state.focusImage].undoState];
+    const state = undoState.pop();
+    if (!state) return (that.pauseSaving = false);
+    that.redoStack.push(state);
 
-    that.canvas.loadFromJSON(prev, () => {
+    that.canvas.loadFromJSON(state, () => {
       that.canvas.renderAll();
       that.pauseSaving = false;
 
@@ -289,12 +289,14 @@ class CanvasControl {
         type: "setExportImage",
         value: that.exportCanvasToImage(),
       });
+
+      that.dispatch({ type: "undo", value: undoState });
     });
   }
 
   redo() {
     that.pauseSaving = true;
-    let state = that.redoStack.pop();
+    const state = that.redoStack.pop();
     if (state) {
       that.undoStack.push(state);
       that.canvas.loadFromJSON(state, () => {
@@ -386,10 +388,12 @@ class CanvasControl {
   }
 
   importJSON(json: string) {
+    that.isRestore = true;
     that.canvas.loadFromJSON(json, () => {
       that.canvas.renderAll();
       that.zoom("fit");
       that.setAutoLayer();
+      that.isRestore = false;
     });
   }
 
