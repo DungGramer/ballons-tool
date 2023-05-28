@@ -1,0 +1,79 @@
+.left-sidebar {
+  background-color: #f0f0f0;
+
+  .tab-ink-bar {
+    position: fixed;
+    border-radius: 0 99px 99px 0;
+    border-left: 9px solid #f47b39;
+    width: 4px;
+    left: -6px;
+    transition: top 0.2s ease-out;
+  }
+
+  span {
+    font-size: 0.75rem;
+  }
+
+  svg[aria-label="Healing Brush"] {
+    transform: rotate(135deg);
+  }
+
+  .function-wrapper {
+    border-radius: 16px;
+  }
+  .item > .function-wrapper {
+    & > img,
+    & > svg {
+      max-width: 32px;
+      max-height: 32px;
+    }
+
+    color: #89888d;
+    & > svg {
+      fill: #89888d;
+    }
+
+    &:hover {
+      color: #232229;
+      & > img,
+      & > svg {
+        fill: #232229;
+      }
+    }
+  }
+
+  .item.selected {
+
+    
+    > .function-wrapper {
+      color: #fff;
+      position: relative;
+      z-index: 1;
+      & > svg {
+        fill: #fff;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0px;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #f47b39;
+        z-index: -1;
+        border-radius: 16px;
+        animation: selected-tool 0.2s ease-out forwards;
+      }
+    }
+  }
+}
+
+@keyframes selected-tool {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

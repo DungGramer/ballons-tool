@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { useImmer, useImmerReducer } from "use-immer";
 import "./App.css";
-import Header from "./components/header/Header";
-import Main from "./components/main/Main";
 import ModalVerify from "./components/ModalVerify/ModalVerify";
+import Header from "./components/header/Header";
+import LeftSidebar from "./components/left-sidebar/LeftSidebar";
+import Main from "./components/main/Main";
 import RightSidebar from "./components/right-sidebar/RightSidebar";
-import Sidebar from "./components/sidebar/Sidebar";
 import { canvasControl, initDispatch } from "./utils/canvas";
 import useVerify from "./utils/useVerify";
 
@@ -19,7 +19,8 @@ function App() {
           <>
             <Header />
             <section className="flex gap-2 main-wrapper">
-              <Sidebar />
+              <LeftSidebar />
+              {/* <Sidebar /> */}
               <Main />
               <RightSidebar />
             </section>
@@ -45,7 +46,7 @@ interface Action {
     | "setTool"
     | "setUndo"
     | "setExportImage"
-    | 'undo'
+    | "undo"
     | "changeImageMode";
   value: any;
 }
@@ -65,6 +66,8 @@ export enum Tool {
   brush = "brush",
   eraser = "eraser",
   text = "text",
+  clean = "clean",
+  export = "export",
 }
 
 type ImageMode = "origin" | "inpainted" | "mask";
@@ -148,7 +151,7 @@ const reducer = (draft: Draft, action: Action) => {
         draft.images[draft.focusImage].undoState = action.value;
       else draft.images[draft.focusImage].undoState.push(action.value);
       return;
-    case 'undo':
+    case "undo":
       console.log(`📕 undo - 151:App.tsx \n`);
       if (!draft.images?.length || draft.focusImage === -1) return;
       draft.images[draft.focusImage].undoState = action.value;

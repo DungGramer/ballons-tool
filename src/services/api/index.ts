@@ -1,4 +1,4 @@
-const API = "http://10.124.68.184:8008/api/v1";
+const API = "http://10.124.68.178:8008/api/v1";
 
 export const UploadImg = async (files) => {
   if (!files) return;

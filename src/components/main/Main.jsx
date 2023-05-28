@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useGlobalContext } from "../../App";
 
 import "./Main.scss";
+import TopSidebar from "../top-sidebar/TopSidebar";
 
 const Main = () => {
   const { state, dispatch, canvasControl } = useGlobalContext();
@@ -30,14 +31,17 @@ const Main = () => {
   }, [state.focusImage]);
 
   return (
-    <div className="main flex items-center justify-center flex-auto gap-6">
-      {state.focusImage > -1 && state.images[state.focusImage]?.origin && (
-        <div className="flex items-center justify-center">
-          <img src={state.images[state.focusImage]?.origin} alt="" />
+    <div className="flex-auto">
+      <TopSidebar />
+      <div className="main flex items-center justify-center  gap-6">
+        {state.focusImage > -1 && state.images[state.focusImage]?.origin && (
+          <div className="flex items-center justify-center">
+            <img src={state.images[state.focusImage]?.origin} alt="" />
+          </div>
+        )}
+        <div className="relative" ref={wrapperRef}>
+          <canvas ref={canvasRef} id="canvas" />
         </div>
-      )}
-      <div className="relative" ref={wrapperRef}>
-        <canvas ref={canvasRef} id="canvas" />
       </div>
     </div>
   );

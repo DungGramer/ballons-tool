@@ -7,6 +7,7 @@ import { blobToBase64 } from "../../utils/converter";
 import Process from "../process/Process";
 import Toolbar from "../toolbar/Toolbar";
 import "./header.scss";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Header = () => {
   const { state, dispatch } = useGlobalContext();
@@ -49,6 +50,13 @@ const Header = () => {
     });
   };
 
+  const responseMessage = (response) => {
+    console.log(response);
+  };
+  const errorMessage = (error) => {
+    console.log(error);
+  };
+
   return (
     <header className="header">
       <div className="header-wrapper flex items-center justify-between h-full">
@@ -76,6 +84,7 @@ const Header = () => {
           >
             Export files
           </button>
+          <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
         </section>
       </div>
       <Process startTranslate={startTranslate} />

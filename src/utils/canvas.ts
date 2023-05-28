@@ -1,6 +1,7 @@
 import { fabric } from "fabric";
 import { Draft } from "../App";
 import { postPath } from "../services/api";
+import { Image } from "fabric/fabric-impl";
 
 class CanvasControl {
   canvasElement: HTMLCanvasElement;
@@ -35,7 +36,11 @@ class CanvasControl {
     that.canvas.on("object:added", (e) => {
       const imageType = e.target?.cacheKey === "image-overlay";
       const pathType = Boolean(e.target?.path);
-      console.log(`📕 that.pauseSaving - 38:canvas.ts \n`, that.isRestore, that.pauseSaving);
+      console.log(
+        `📕 that.pauseSaving - 38:canvas.ts \n`,
+        that.isRestore,
+        that.pauseSaving
+      );
       if (that.pauseSaving || that.isRestore) return;
 
       // console.log(`📕 e - 29:canvas.ts \n`, e.target);
@@ -120,7 +125,7 @@ class CanvasControl {
 
   zoom(type: "fit" | "zoomIn" | "zoomOut" | "reset" | "fill") {
     if (!that.canvas.backgroundImage) return;
-    const img = that.canvas.backgroundImage.getElement();
+    const img = (that.canvas.backgroundImage as Image).getElement();
 
     const { width, height } = img;
     const [widthCanvas, heightCanvas] = [
