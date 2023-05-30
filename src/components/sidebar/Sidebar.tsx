@@ -86,7 +86,7 @@ const Sidebar = () => {
   useSetDragFile(dragBox, importImage);
 
   return (
-    <div className="max-w-xs w-1/3 sidebar h-full flex flex-col">
+    <div className="w-full sidebar flex h-40 gap-2">
       {state.images.length === 0 ? (
         <>
           <div
@@ -120,14 +120,15 @@ const Sidebar = () => {
               <div
                 key={index}
                 className={clsx(
-                  "flex flex-col gap-2 sidebar-item cursor-pointer",
+                  "flex flex-col gap-2 sidebar-item cursor-pointer justify-center",
                   {
                     "border-blue-400": index === state.focusImage,
                   }
                 )}
                 onClick={(e) => focusImage(e, index)}
+                attr-index={index + 1}
               >
-                <span className="text-center pt-2">{index + 1}</span>
+                {/* <span className="text-center pt-2">{index + 1}</span> */}
                 <img src={image.origin} />
                 {/* <p>{image.name}</p> */}
               </div>

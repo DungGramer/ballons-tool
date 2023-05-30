@@ -20,6 +20,11 @@ img {
   max-height: 100%;
 }
 
+:root {
+  --color-border: 230, 230, 230;
+  --color-primary: 244, 123, 57;
+}
+
 ::-webkit-scrollbar {
   height: 0.5rem;
   width: 0.5rem;

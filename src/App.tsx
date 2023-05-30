@@ -9,27 +9,45 @@ import RightSidebar from "./components/right-sidebar/RightSidebar";
 import { canvasControl, initDispatch } from "./utils/canvas";
 import useVerify from "./utils/useVerify";
 
-function App() {
+function App({ children }) {
   const [, , result] = useVerify();
 
   return (
     <div className="App h-screen flex flex-col">
-      <GlobalProvider>
-        {result ? (
-          <>
-            <Header />
-            <section className="flex gap-2 main-wrapper">
-              <LeftSidebar />
-              {/* <Sidebar /> */}
-              <Main />
-              <RightSidebar />
-            </section>
-          </>
-        ) : (
-          <ModalVerify />
-        )}
-      </GlobalProvider>
+      <GlobalProvider>{result ? <AppChild /> : <ModalVerify />}</GlobalProvider>
     </div>
+  );
+}
+
+function AppChild() {
+  const { state } = useGlobalContext();
+  const toolMode = state.toolMode;
+
+  return (
+    <>
+      <Header />
+      <section className="flex gap-2 main-wrapper">
+        <LeftSidebar />
+        <Main />
+        {toolMode && <RightSidebar />}
+      </section>
+    </>
+    // <div className="App h-screen flex flex-col">
+    //   <GlobalProvider>
+    //     {result ? (
+    //       <>
+    //         <Header />
+    //         <section className="flex gap-2 main-wrapper">
+    //           <LeftSidebar />
+    //           <Main />
+    //           <RightSidebar />
+    //         </section>
+    //       </>
+    //     ) : (
+    //       <ModalVerify />
+    //     )}
+    //   </GlobalProvider>
+    // </div>
   );
 }
 

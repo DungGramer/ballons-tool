@@ -60,7 +60,7 @@ const LeftSidebar = () => {
   }, []);
 
   return (
-    <nav className="left-sidebar flex flex-col" ref={ref}>
+    <nav className="left-sidebar flex flex-col shrink-0" ref={ref}>
       {items.map((item) => (
         <div className={clsx("item-wrapper my-3")}>
           <div
@@ -69,7 +69,7 @@ const LeftSidebar = () => {
             })}
             onClick={() => dispatch({ type: "setTool", value: item.key })}
           >
-            <div className="function-wrapper flex flex-col items-center px-3 py-2 gap-1">
+            <div className="function-wrapper flex flex-col items-center px-2 py-2 gap-1">
               {item.icon}
               <span>{item.label}</span>
             </div>

@@ -3,6 +3,7 @@ import { useGlobalContext } from "../../App";
 
 import "./Main.scss";
 import TopSidebar from "../top-sidebar/TopSidebar";
+import Sidebar from "../sidebar/Sidebar";
 
 const Main = () => {
   const { state, dispatch, canvasControl } = useGlobalContext();
@@ -31,7 +32,7 @@ const Main = () => {
   }, [state.focusImage]);
 
   return (
-    <div className="flex-auto">
+    <div className="flex-auto flex flex-col main-editor">
       <TopSidebar />
       <div className="main flex items-center justify-center  gap-6">
         {state.focusImage > -1 && state.images[state.focusImage]?.origin && (
@@ -39,10 +40,13 @@ const Main = () => {
             <img src={state.images[state.focusImage]?.origin} alt="" />
           </div>
         )}
-        <div className="relative" ref={wrapperRef}>
-          <canvas ref={canvasRef} id="canvas" />
-        </div>
+        {state.focusImage > -1 && (
+          <div className="relative" ref={wrapperRef}>
+            <canvas ref={canvasRef} id="canvas" />
+          </div>
+        )}
       </div>
+      <Sidebar />
     </div>
   );
 };

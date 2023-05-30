@@ -61,13 +61,14 @@ const Header = () => {
     <header className="header">
       <div className="header-wrapper flex items-center justify-between h-full">
         <section className="flex items-center gap-2 h-full">
-          <button
+          <img src="/logo.png" alt="logo" className="w-10 h-10" />
+          {/* <button
             onClick={translate}
             className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
             disabled={state.step < Step.ready || state.step >= Step.translated}
           >
             Run AI
-          </button>
+          </button> */}
 
           {state.step >= Step.translated && (
             <>
@@ -77,13 +78,13 @@ const Header = () => {
           )}
         </section>
         <section className="flex gap-2">
-          <button
+          {/* <button
             onClick={download}
             className="border border-gray-300 rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100"
             disabled={state.step < Step.translated}
           >
             Export files
-          </button>
+          </button> */}
           <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
         </section>
       </div>
